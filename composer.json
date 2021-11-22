@@ -20,5 +20,8 @@
         "files": [
             "src/functions.php"
         ]
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
     }
 }
