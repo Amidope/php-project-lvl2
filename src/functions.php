@@ -1,5 +1,7 @@
 <?php
 
+namespace Php\Project\Lvl2\Functions;
+
 use function Functional\sort;
 
 function stringifyBool($arr)
