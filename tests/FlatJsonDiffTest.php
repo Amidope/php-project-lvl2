@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Package\Tests;
+namespace Php\Project\Lvl2\Tests;
 
 use PHPUnit\Framework\TestCase;
 use function Php\Project\Lvl2\Functions\gendiff;
