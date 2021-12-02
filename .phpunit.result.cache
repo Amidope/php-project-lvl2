@@ -1,1 +1,1 @@
-{"version":1,"defects":{"Warning":6,"Php\\Package\\Tests\\FlatJsonDiffTest::testFlatGenDiff":4},"times":{"Warning":0.005,"Php\\Package\\Tests\\FlatJsonDiffTest::testFlatGenDiff":0.005}}
+{"version":1,"defects":[],"times":{"Php\\Package\\Tests\\FlatJsonDiffTest::testFlatGenDiff":0.006}}
