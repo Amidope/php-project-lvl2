@@ -10,7 +10,7 @@ if (file_exists($autoloadPath1)) {
 }
 
 use function Php\Project\Lvl2\Functions\gendiff;
-
+use function Php\Project\Lvl2\Functions\getFilesPath;
 $doc = <<<DOC
 Generate diff
 
@@ -30,8 +30,9 @@ require('../vendor/docopt/docopt/src/docopt.php');
 $args = Docopt::handle($doc, array('version'=>'gendiff 0.1'));
 //foreach ($args as $k=>$v)
 //    echo $k.': '.json_encode($v).PHP_EOL;
-$pathToFile1 = $_SERVER['argv'][1];
-$pathToFile2 = $_SERVER['argv'][2];
-$diff = gendiff($pathToFile1, $pathToFile2);
+$pathsToFiles = getFilesPath();
 
+
+[$pathToFile1, $pathToFile2] = $pathsToFiles;
+$diff = gendiff($pathToFile1, $pathToFile2);
 print_r($diff);

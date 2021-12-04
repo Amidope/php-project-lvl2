@@ -4,6 +4,11 @@ namespace Php\Project\Lvl2\Functions;
 
 use function Functional\sort;
 
+function getFilesPath()
+{
+    return [$_SERVER['argv'][1], $_SERVER['argv'][2]];
+}
+
 function stringifyBool($arr)
 {
     return array_map(
