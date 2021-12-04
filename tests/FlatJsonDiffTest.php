@@ -9,6 +9,7 @@ class FlatJsonDiffTest extends TestCase
 {
     protected $jsonPath1;
     protected $jsonPath2;
+    protected $pathToEmptyJson;
 
     public function getFixtureFullPath($fixtureName):string
     {
@@ -20,6 +21,7 @@ class FlatJsonDiffTest extends TestCase
     {
         $this->jsonPath1 = $this->getFixtureFullPath('file1.json');
         $this->jsonPath2 = $this->getFixtureFullPath('file2.json');
+        $this->pathToEmptyJson = $this->getFixtureFullPath('empty.json');
     }
 
     public function testFlatGenDiff():void
@@ -36,4 +38,16 @@ class FlatJsonDiffTest extends TestCase
         RES;
         $this->assertEquals($expected, gendiff($this->jsonPath1, $this->jsonPath2));
     }
+    public function testEmptyGenDiff():void
+    {
+        $expected = <<<RES
+        {
+          + host: hexlet.io
+          + timeout: 20
+          + verbose: true
+        }
+        RES;
+        $this->assertEquals($expected, gendiff($this->pathToEmptyJson, $this->jsonPath2));
+    }
+
 }
