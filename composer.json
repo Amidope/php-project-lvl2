@@ -23,7 +23,8 @@
             "Php\\Package\\Tests\\": "tests"
         },
         "files": [
-            "src/functions.php"
+            "src/functions.php",
+            "src/parsers.php"
         ]
     },
     "require-dev": {
