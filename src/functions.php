@@ -3,6 +3,8 @@
 namespace Php\Project\Lvl2\Functions;
 
 use function Functional\sort;
+use function Php\Project\Lvl2\parsers\parseJson;
+use function Php\Project\Lvl2\parsers\parseYaml;
 
 function getFilesPath()
 {
@@ -26,16 +28,21 @@ function stringifyBool($arr)
     );
 }
 
+function getDataByExtension($pathToFile)
+{
+    if (str_ends_with($pathToFile, 'json')) {
+        return parseJson($pathToFile);
+    } elseif (str_ends_with($pathToFile, 'yaml') || str_ends_with($pathToFile, 'yml')) {
+        return parseYaml($pathToFile);
+    }
+}
+
 function gendiff($pathToFile1, $pathToFile2)
 {
-    $json1 = file_get_contents($pathToFile1);
-    $json2 = file_get_contents($pathToFile2);
-
-    $arrayJson1 = json_decode($json1, true);
-    $sarrayJson2 = json_decode($json2, true);
-
-    $stringifiedArr1 = stringifyBool($arrayJson1);
-    $stringifiedArr2 = stringifyBool($sarrayJson2);
+    $file1 = getDataByExtension($pathToFile1);
+    $file2 = getDataByExtension($pathToFile2);
+    $stringifiedArr1 = stringifyBool($file1);
+    $stringifiedArr2 = stringifyBool($file2);
 
     $unsorted = [];
     foreach ($stringifiedArr1 as $key => $value) {

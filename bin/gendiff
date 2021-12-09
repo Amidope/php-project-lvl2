@@ -11,6 +11,7 @@ if (file_exists($autoloadPath1)) {
 
 use function Php\Project\Lvl2\Functions\gendiff;
 use function Php\Project\Lvl2\Functions\getFilesPath;
+use function Php\Project\Lvl2\Functions\getDataByExtension;
 $doc = <<<DOC
 Generate diff
 
@@ -34,5 +35,6 @@ $pathsToFiles = getFilesPath();
 
 
 [$pathToFile1, $pathToFile2] = $pathsToFiles;
+
 $diff = gendiff($pathToFile1, $pathToFile2);
 print_r($diff);
