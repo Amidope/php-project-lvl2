@@ -1,6 +1,7 @@
 <?php
 
 namespace Php\Project\Lvl2\parsers;
+
 use Symfony\Component\Yaml\Yaml;
 
 function parseJson($pathToFile)
