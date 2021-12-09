@@ -18,10 +18,6 @@
         "bin/gendiff"
     ],
     "autoload": {
-        "psr-4": {
-            "Php\\Package\\": "src",
-            "Php\\Package\\Tests\\": "tests"
-        },
         "files": [
             "src/functions.php",
             "src/parsers.php"
