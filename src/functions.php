@@ -11,6 +11,7 @@ function getFilesPath()
     return [$_SERVER['argv'][1], $_SERVER['argv'][2]];
 }
 
+
 function stringifyBool($arr)
 {
     return array_map(
