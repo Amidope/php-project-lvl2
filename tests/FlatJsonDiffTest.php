@@ -14,8 +14,8 @@ class FlatJsonDiffTest extends TestCase
     protected $pathToYaml2;
     protected $pathToEmptyYaml;
     protected $expectedFlatGendiff;
-    protected $expectedFirstFileEmptyFlatGendiff;
-    protected $expectedSecondFileEmptyFlatGendiff;
+    protected $expectedFirstEmptyGendiff;
+    protected $expectedSecondEmptyGendiff;
 
     public function getFixtureFullPath($fixtureName):string
     {
@@ -25,11 +25,11 @@ class FlatJsonDiffTest extends TestCase
 
     public function setUp():void
     {
-        $this->jsonPath1 = $this->getFixtureFullPath('file1.json');
-        $this->jsonPath2 = $this->getFixtureFullPath('file2.json');
+        $this->jsonPath1 = $this->getFixtureFullPath('flat1.json');
+        $this->jsonPath2 = $this->getFixtureFullPath('flat2.json');
         $this->pathToEmptyJson = $this->getFixtureFullPath('empty.json');
-        $this->pathToYaml1 = $this->getFixtureFullPath('file1.yml');
-        $this->pathToYaml2 = $this->getFixtureFullPath('file2.yaml');
+        $this->pathToYaml1 = $this->getFixtureFullPath('flat1.yml');
+        $this->pathToYaml2 = $this->getFixtureFullPath('flat2.yaml');
         $this->pathToEmptyYaml = $this->getFixtureFullPath('empty.yml');
 
         $this->expectedFlatGendiff = <<<RES
@@ -42,14 +42,14 @@ class FlatJsonDiffTest extends TestCase
           + verbose: true
         }
         RES;
-        $this->expectedFirstFileEmptyFlatGendiff = <<<RES
+        $this->expectedFirstEmptyGendiff = <<<RES
         {
           + host: hexlet.io
           + timeout: 20
           + verbose: true
         }
         RES;
-        $this->expectedSecondFileEmptyFlatGendiff = <<<RES
+        $this->expectedSecondEmptyGendiff = <<<RES
         {
           - follow: false
           - host: hexlet.io
@@ -59,14 +59,14 @@ class FlatJsonDiffTest extends TestCase
         RES;
     }
 
-    public function testFlatJsonGenDiff():void
+    public function testJsonGenDiff():void
     {
         $this->assertEquals($this->expectedFlatGendiff, gendiff($this->jsonPath1, $this->jsonPath2));
     }
     public function testEmptyJsonGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstFileEmptyFlatGendiff, gendiff($this->pathToEmptyJson, $this->jsonPath2));
-        $this->assertEquals($this->expectedSecondFileEmptyFlatGendiff, gendiff($this->jsonPath1, $this->pathToEmptyJson));
+        $this->assertEquals($this->expectedFirstEmptyGendiff, gendiff($this->pathToEmptyJson, $this->jsonPath2));
+        $this->assertEquals($this->expectedSecondEmptyGendiff, gendiff($this->jsonPath1, $this->pathToEmptyJson));
     }
     public function testFlatYamlGenDiff():void
     {
@@ -74,7 +74,7 @@ class FlatJsonDiffTest extends TestCase
     }
     public function testEmptyYamlGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstFileEmptyFlatGendiff, gendiff($this->pathToEmptyYaml, $this->pathToYaml2));
-        $this->assertEquals($this->expectedSecondFileEmptyFlatGendiff, gendiff($this->pathToYaml1, $this->pathToEmptyYaml));
+        $this->assertEquals($this->expectedFirstEmptyGendiff, gendiff($this->pathToEmptyYaml, $this->pathToYaml2));
+        $this->assertEquals($this->expectedSecondEmptyGendiff, gendiff($this->pathToYaml1, $this->pathToEmptyYaml));
     }
 }
