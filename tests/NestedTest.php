@@ -13,8 +13,18 @@ class NestedTest extends TestCase
     protected $pathToYaml2;
     protected $expectedString;
 
+    public function getFixtureFullPath($fixtureName):string
+    {
+        $parts = [__DIR__, 'fixtures', $fixtureName];
+        return realpath(implode('/', $parts));
+    }
+
     public function setUp(): void
     {
+        $this->jsonPath1 = $this->getFixtureFullPath('nestedFile1.json');
+        $this->jsonPath2 = $this->getFixtureFullPath('nestedFile2.json');
+        
+
         $this->expectedString = <<<RES
         {
             common: {
@@ -61,6 +71,11 @@ class NestedTest extends TestCase
             }
         }
         RES;
+    }
+    
+    public function testNestedDiff():void
+    {
+        $this->assertEquals($this->expectedString, gendiff($this->jsonPath1, $this->jsonPath2));
     }
 }
 
