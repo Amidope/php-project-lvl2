@@ -5,7 +5,7 @@ dump:
 validate:
 	composer validate
 gendiff:
-	./bin/gendiff
+	./bin/gendiff tests/fixtures/nestedFile1.json tests/fixtures/nestedFile2.json 
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src bin
 test:
