@@ -38,43 +38,58 @@ function getDataByExtension($pathToFile)
     }
 }
 
+function treeSort($tree)
+{
+    ksort();
+	//usort($tree, fn($innerArr1, $innerArr2) => strcmp($innerArr1, $innerArr2));
+	return $tree;
+}
+
+function buildTree($arr1, $arr2 = null)
+{
+	$result = [];
+
+	// если $arr2 == null
+	if (!$arr2) {
+		return array_map(function($key, $value) {
+			if (is_array($value)) {
+				return ['sign' => null, "key" => $key, 'children' => buildTree($value)]; 
+			}
+			return ['sign' => null, "key" => $key, 'children' => $value];
+		}, array_keys($arr1), array_values($arr1));
+	}
+
+	foreach ($arr1 as $key => $arr1Value) {
+		$arr2Value = $arr2[$key] ?? null;
+
+		// если ключ есть в $arr2
+		if ($arr2Value) {
+			if (is_array($arr1Value)) {
+				$result[] = ['sign' => null, "key" => $key, 'children' => buildTree($arr1Value, $arr2Value)];
+			} elseif ($arr1Value == $arr2Value) {
+				$result[] = ['sign' => null, "key" => $key, 'children' => $arr1Value];
+			} else {
+				$result[] = ['sign' => "-", "key" => $key, 'children' => $arr1Value];
+				$result[] = ['sign' => "+", "key" => $key, 'children' => $arr2Value];
+			}
+		} else {
+			$result[] = ['sign' => "-", "key" => $key, 'children' => is_array($arr1Value) ? buildTree($arr1Value) : $arr1Value];
+		}
+	}
+
+	$secondArrDiff = array_diff_key($arr2, $arr1);
+	foreach ($secondArrDiff as $key => $value) {
+		$result[] = ['sign' => "+", "key" => $key, 'children' => is_array($arr1Value) ? buildTree($arr1Value) : $arr1Value];
+	}
+    return treeSort($result);
+}
+
 function gendiff($pathToFile1, $pathToFile2)
 {
     $file1 = getDataByExtension($pathToFile1);
     $file2 = getDataByExtension($pathToFile2);
-    $stringifiedArr1 = stringifyBool($file1);
-    $stringifiedArr2 = stringifyBool($file2);
-
-    $unsorted = [];
-    foreach ($stringifiedArr1 as $key => $value) {
-        if (array_key_exists($key, $stringifiedArr2)) {
-            if ($value === $stringifiedArr2[$key]) {
-                $unsorted[] = "    {$key}: {$value}";
-            } else {
-                $unsorted[] = "  - {$key}: {$value}";
-                $unsorted[] = "  + {$key}: {$stringifiedArr2[$key]}";
-            }
-        } else {
-            $unsorted[] = "  - {$key}: {$value}";
-        }
-    }
-    $diff = array_diff_key($stringifiedArr2, $stringifiedArr1);
-    foreach ($diff as $key => $value) {
-        $unsorted[] = "  + {$key}: {$value}";
-    }
-
-    $sorted = sort(
-        $unsorted,
-        function ($a, $b) {
-            //        print_r(substr ($a, 4, strpos($a, ':') - 4 . PHP_EOL));
-            $strcmpx = strcmp(substr($a, 4, strpos($a, ':') - 4), substr($b, 4, strpos($b, ':') - 4));
-
-            if ($strcmpx == 0) {
-                return substr($a, 2) === '-' ? 1 : -1;
-            }
-            return $strcmpx;
-        }
-    );
-    $resWithoutBrackets = array_reduce($sorted, fn ($acc, $item) => $acc . $item . PHP_EOL, "");
-    return '{' . PHP_EOL . $resWithoutBrackets . '}';
+    // $stringifiedArr1 = stringifyBool($file1);
+    // $stringifiedArr2 = stringifyBool($file2);
+    $res = buildTree($file1,$file2);
+    var_dump($res);   
 }
