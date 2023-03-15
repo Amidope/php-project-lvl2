@@ -2,10 +2,14 @@
 
 namespace Php\Project\Lvl2\Functions;
 
+
+use function Docopt\dump as dumperDocopt;
+//use function Symfony\Component\VarDumper\dump;
 use function Functional\sort;
 use function Functional\map;
 use function Php\Project\Lvl2\parsers\parseJson;
 use function Php\Project\Lvl2\parsers\parseYaml;
+
 
 function getFilesPath()
 {
@@ -21,8 +25,8 @@ function stringifyBool($arr)
                 return 'true';
             } elseif ($value === false) {
                 return 'false';
-            } elseif ('$value' === null) {
-                return 'null';
+            } elseif ('$value' === "") {
+                return "";
             }
             return $value;
         },
@@ -39,79 +43,104 @@ function getDataByExtension($pathToFile)
     }
 }
 
+function checkForEmptyness($file1, $file2)
+{
+	if (!$file1 && !$file2) {
+		return "Both files are empty";
+	}
+	if (!$file1) {
+		return "First file is empty";		
+	}
+	if (!$file2) {
+		return "Second file is empty";
+	}
+	return "";
+}
+
 function treeSort($tree)
 {
-    ksort();
-	//usort($tree, fn($innerArr1, $innerArr2) => strcmp($innerArr1, $innerArr2));
+	uksort($tree, fn($key1, $key2) => strcmp($key1, $key2));
 	return $tree;
 }
-// make arr2 [] by default
-function buildTree($arr1, $arr2 = null)
-{
-	$result = [];
 
-	// если $arr2 == null
+function buildLeaf($key, $val, string $sign = "")
+{
+	return ['sign' => $sign, "key" => $key, 'value' => $val];
+}
+
+// ADD YAML TREE
+function buildTree($arr1, $arr2 = "")
+{	
+	$result = [];
+	
 	if (!$arr2) {
 		return array_map(function($key, $val) {
-			if (is_array($val)) {
-				return ['sign' => null, "key" => $key, 'value' => buildTree($val)]; 
-			}
-			return ['sign' => null, "key" => $key, 'value' => $val];
+			$value = is_array($val) ? buildTree($val) : $val;
+			
+			return buildLeaf($key, $value);
 		}, array_keys($arr1), array_values($arr1));
 	}
+	$arr1UniqueByKeys = array_diff_key($arr1, $arr2);
 
-	// $arr1UniqueByKeys = array_diff_key($arr1, $arr2); 
-	// $tree1 = map($arr1UniqueByKeys, fn($val, $key, $col) => ['sign' => '-', "key" => $key, 'value' => is_array($val) ? buildTree($val) : $val]);
+	$tree1 = array_map(function($key, $val) {
+		return buildLeaf($key, is_array($val) ? buildTree($val) : $val,"-");
+	}, array_keys($arr1UniqueByKeys), array_values($arr1UniqueByKeys));
+	
+	$arr2UniqueByKeys = array_diff_key($arr2, $arr1); 
 
-	// $arr2UniqueByKeys = array_diff_key($arr2, $arr1); 
-	// $tree2 = map($arr2UniqueByKeys, fn($val, $key, $col) => ['sign' => '+', "key" => $key, 'value' => is_array($val) ? buildTree($val) : $val]);
-	print_r($arr1);
+	$tree2 = array_map(function($key, $val) {
+		return buildLeaf($key, is_array($val) ? buildTree($val) : $val,"+");
+	}, array_keys($arr2UniqueByKeys), array_values($arr2UniqueByKeys));
+
 	$matchedKeys = array_intersect(array_keys($arr1), array_keys($arr2));
-
-	$matchedTree = array_reduce($matchedKeys, function($acc, $key) use ($arr1,$arr2) {
-		
-		if (is_array($arr1[$key])) {
-			$acc[] = ['sign' => null, "key" => $key, 'value' => buildTree($arr1[$key], $arr2[$key])];
-		} else {
-			$acc[] = ['sign' => "-", "key" => $key, 'value' => $arr1[$key]];
-			$acc[] = ['sign' => "+", "key" => $key, 'value' => $arr2[$key]];
+	$matchedTree = array_reduce($matchedKeys, function($acc, $key) use ($arr1, $arr2) {
+		$val1 = $arr1[$key];
+		$val2 = $arr2[$key];
+		if (is_array($val1) && is_array($val2)) {
+			$children = buildTree($val1, $val2);
+			$acc[] = buildLeaf($key, $children);
+			return $acc;
+		} elseif (!is_array($val1) && !is_array($val2)) {
+			if ($val1 === $val2 ) {
+				$acc[] = buildLeaf($key, $val1);
+			} else {
+				$acc[] = buildLeaf($key, $val1, "-");
+				$acc[] = buildLeaf($key, $val2, "+");				
+			}
+			return $acc;
 		}
-		//print_r($acc);
+			
+		$value1 = is_array($val1) ? buildTree($val1) : $val1;
+		$value2 = is_array($val2) ? buildTree($val2) : $val2;
+		$acc[] = buildLeaf($key, $value1, "-");
+		$acc[] = buildLeaf($key, $value2, "+");
 		return $acc;
 	}, []);
+	$result = [...$matchedTree, ...$tree1, ...$tree2];
+	$sorted = treeSort($result);
+	dump('OOOOOOOOOOOO');
+	dump($sorted);
+	return $sorted;
 
+}
 
-	// foreach ($arr1 as $key => $arr1Value) {
-	// 	$arr2Value = $arr2[$key] ?? null;
+function stringifyTree($tree, $replacer = " ", $spacesCount = 2)
+{
 
-	// 	// если ключ есть в $arr2
-	// 	if ($arr2Value) {
-	// 		if (is_array($arr1Value)) {
-	// 			$result[] = ['sign' => null, "key" => $key, 'value' => buildTree($arr1Value, $arr2Value)];
-	// 		} elseif ($arr1Value == $arr2Value) {
-	// 			$result[] = ['sign' => null, "key" => $key, 'value' => $arr1Value];
-	// 		} else {
-	// 			$result[] = ['sign' => "-", "key" => $key, 'value' => $arr1Value];
-	// 			$result[] = ['sign' => "+", "key" => $key, 'value' => $arr2Value];
-	// 		}
-	// 	} else {
-	// 		$result[] = ['sign' => "-", "key" => $key, 'value' => is_array($arr1Value) ? buildTree($arr1Value) : $arr1Value];
-	// 	}
-	// }
-
-	// $secondArrDiff = array_diff_key($arr2, $arr1);
-	// foreach ($secondArrDiff as $key => $value) {
-	// 	$result[] = ['sign' => "+", "key" => $key, 'value' => is_array($arr1Value) ? buildTree($arr1Value) : $arr1Value];
-	// }
-    // return treeSort($result);
 }
 
 function gendiff($pathToFile1, $pathToFile2)
 {
     $file1 = getDataByExtension($pathToFile1);
     $file2 = getDataByExtension($pathToFile2);
-    // $stringifiedArr1 = stringifyBool($file1);
-    // $stringifiedArr2 = stringifyBool($file2);
+
+	$output = checkForEmptyness($file1, $file2);
+
+	if ($output) {
+		return $output;
+	}
+
+	// if 1 file is empty return string
     $res = buildTree($file1,$file2);
-    //var_dump($res);   
+    //dump($res);   
 }
