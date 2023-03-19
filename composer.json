@@ -10,9 +10,9 @@
         }
     ],
     "require": {
-        "docopt/docopt": "^1.0",
+        "docopt/docopt": "^1.0.4",
         "lstrojny/functional-php": "^1.17",
-        "symfony/yaml": "^6.0"
+        "symfony/yaml": "^6.2.7"
     },
     "bin": [
         "bin/gendiff"
