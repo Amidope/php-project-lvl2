@@ -23,9 +23,10 @@ class NestedTest extends TestCase
     {
         $this->jsonPath1 = $this->getFixtureFullPath('nestedFile1.json');
         $this->jsonPath2 = $this->getFixtureFullPath('nestedFile2.json');
+        $this->YamlPath1 = $this->getFixtureFullPath('nestedFile1.yml');
+        $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');        
         
-        
-        $this->expectedString = <<<RES        
+        $this->expectedStylishString = <<<RES        
         {
             common: {
               + follow: false
