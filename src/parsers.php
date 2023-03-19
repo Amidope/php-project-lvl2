@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Project\Lvl2\parsers;
+namespace Php\Project\Lvl2\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -10,6 +10,5 @@ function parseJson($pathToFile)
 }
 function parseYaml($pathToFile)
 {
-    $yamlString = file_get_contents($pathToFile);
-    return (array) Yaml::parse($yamlString, Yaml::PARSE_OBJECT_FOR_MAP);
+    return Yaml::parse(file_get_contents($pathToFile));
 }

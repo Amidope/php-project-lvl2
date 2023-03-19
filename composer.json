@@ -20,7 +20,9 @@
     "autoload": {
         "files": [
             "src/functions.php",
-            "src/parsers.php"
+            "src/parsers.php",
+            "src/builder.php",
+            "src/formatters.php"
         ]
     },
     "require-dev": {
