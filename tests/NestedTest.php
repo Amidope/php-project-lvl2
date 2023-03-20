@@ -11,7 +11,7 @@ class NestedTest extends TestCase
     protected $jsonPath2;
     protected $pathToYaml1;
     protected $pathToYaml2;
-    protected $expectedString;
+    protected $expectedStylishString;
 
     public function getFixtureFullPath($fixtureName):string
     {
@@ -26,7 +26,7 @@ class NestedTest extends TestCase
         $this->YamlPath1 = $this->getFixtureFullPath('nestedFile1.yml');
         $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');        
         
-        $this->expectedStylishString = <<<RES        
+        $this->expectedStylishString = <<<RES
         {
             common: {
               + follow: false
