@@ -76,7 +76,7 @@ class NestedTest extends TestCase
     
     public function testNestedDiff():void
     {
-        $this->assertEquals($this->expectedString, gendiff($this->jsonPath1, $this->jsonPath2));
+        $this->assertEquals($this->expectedStylishString, gendiff($this->jsonPath1, $this->jsonPath2));
     }
 }
 

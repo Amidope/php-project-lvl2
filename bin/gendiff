@@ -30,7 +30,7 @@ DOC;
 // <argument> ARGUMENT command -o --option [optional elements] (required elements) (mutually exclusive | elements)
 //require('../vendor/docopt/docopt/src/docopt.php');
 
-$args = Docopt::handle($doc, array('version'=>'gendiff 0.1'));
+$args = Docopt::handle($doc, ['version'=>'gendiff 0.1']);
 
 
 

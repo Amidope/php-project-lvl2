@@ -8,6 +8,8 @@ gendiff:
 	./bin/gendiff tests/fixtures/nestedFile1.yml tests/fixtures/nestedFile2.yml
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src bin
+lint-diff:
+	composer exec --verbose phpcs -- --standard=PSR12 --report=diff src bin
 test:
 	composer exec --verbose phpunit tests
 test-coverage:
