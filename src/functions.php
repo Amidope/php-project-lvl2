@@ -69,7 +69,7 @@ function gendiff($pathToFile1, $pathToFile2)
     $file1 = getDataByExtension($pathToFile1);
     $file2 = getDataByExtension($pathToFile2);
     $output = checkForEmptyness($file1, $file2);
-    
+
     if ($output) {
         return $output;
     }

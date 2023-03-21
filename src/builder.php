@@ -10,22 +10,34 @@ function buildTree($arr1, $arr2 = [])
 {
     $result = [];
     if (!$arr2) {
-        $result = array_map(function ($key, $val) {
-            $value = is_array($val) ? buildTree($val) : $val;
-            return buildNode($key, $value);
-        }, array_keys($arr1), array_values($arr1));
+        $result = array_map(
+            function ($key, $val) {
+                $value = is_array($val) ? buildTree($val) : $val;
+                return buildNode($key, $value);
+            },
+            array_keys($arr1),
+            array_values($arr1)
+        );
         return treeSort($result);
     }
 
     $arr1UniqueByKeys = array_diff_key($arr1, $arr2);
-    $tree1 = array_map(function ($key, $val) {
-        return buildNode($key, is_array($val) ? buildTree($val) : $val, "-");
-    }, array_keys($arr1UniqueByKeys), array_values($arr1UniqueByKeys));
+    $tree1 = array_map(
+        function ($key, $val) {
+            return buildNode($key, is_array($val) ? buildTree($val) : $val, "-");
+        },
+        array_keys($arr1UniqueByKeys),
+        array_values($arr1UniqueByKeys)
+    );
 
     $arr2UniqueByKeys = array_diff_key($arr2, $arr1);
-    $tree2 = array_map(function ($key, $val) {
-        return buildNode($key, is_array($val) ? buildTree($val) : $val, "+");
-    }, array_keys($arr2UniqueByKeys), array_values($arr2UniqueByKeys));
+    $tree2 = array_map(
+        function ($key, $val) {
+            return buildNode($key, is_array($val) ? buildTree($val) : $val, "+");
+        },
+        array_keys($arr2UniqueByKeys),
+        array_values($arr2UniqueByKeys)
+    );
 
     $matchedKeys = array_intersect(array_keys($arr1), array_keys($arr2));
     $matchedTree = array_reduce(
