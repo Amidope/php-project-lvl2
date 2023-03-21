@@ -10,10 +10,11 @@ function buildTree($arr1, $arr2 = "")
 {
     $result = [];
     if (!$arr2) {
-        return array_map(function ($key, $val) {
+        $result = array_map(function ($key, $val) {
             $value = is_array($val) ? buildTree($val) : $val;
             return buildNode($key, $value);
         }, array_keys($arr1), array_values($arr1));
+        return treeSort($result);
     }
 
     $arr1UniqueByKeys = array_diff_key($arr1, $arr2);
