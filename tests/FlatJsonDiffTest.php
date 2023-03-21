@@ -14,8 +14,9 @@ class FlatJsonDiffTest extends TestCase
     protected $pathToYaml2;
     protected $pathToEmptyYaml;
     protected $expectedFlatGendiff;
-    protected $expectedFirstEmptyGendiff;
-    protected $expectedSecondEmptyGendiff;
+    protected $expectedFirstEmptyFile;
+    protected $expectedSecondEmptyFile;
+    protected $expectedBothEmpty;
 
     public function getFixtureFullPath($fixtureName):string
     {
@@ -42,21 +43,9 @@ class FlatJsonDiffTest extends TestCase
           + verbose: true
         }
         RES;
-        $this->expectedFirstEmptyGendiff = <<<RES
-        {
-          + host: hexlet.io
-          + timeout: 20
-          + verbose: true
-        }
-        RES;
-        $this->expectedSecondEmptyGendiff = <<<RES
-        {
-          - follow: false
-          - host: hexlet.io
-          - proxy: 123.234.53.22
-          - timeout: 50
-        }
-        RES;
+        $this->expectedFirstEmptyFile = "First file is empty";
+        $this->expectedSecondEmptyFile = "Second file is empty";
+        $this->expectedBothEmpty = "Both files are empty";
     }
 
     public function testJsonGenDiff():void
@@ -65,8 +54,8 @@ class FlatJsonDiffTest extends TestCase
     }
     public function testEmptyJsonGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstEmptyGendiff, gendiff($this->pathToEmptyJson, $this->jsonPath2));
-        $this->assertEquals($this->expectedSecondEmptyGendiff, gendiff($this->jsonPath1, $this->pathToEmptyJson));
+        $this->assertEquals($this->expectedFirstEmptyFile, gendiff($this->pathToEmptyJson, $this->jsonPath2));
+        $this->assertEquals($this->expectedSecondEmptyFile, gendiff($this->jsonPath1, $this->pathToEmptyJson));
     }
     public function testFlatYamlGenDiff():void
     {
@@ -74,7 +63,7 @@ class FlatJsonDiffTest extends TestCase
     }
     public function testEmptyYamlGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstEmptyGendiff, gendiff($this->pathToEmptyYaml, $this->pathToYaml2));
-        $this->assertEquals($this->expectedSecondEmptyGendiff, gendiff($this->pathToYaml1, $this->pathToEmptyYaml));
+        $this->assertEquals($this->expectedFirstEmptyFile, gendiff($this->pathToEmptyYaml, $this->pathToYaml2));
+        $this->assertEquals($this->expectedSecondEmptyFile, gendiff($this->pathToYaml1, $this->pathToEmptyYaml));
     }
 }

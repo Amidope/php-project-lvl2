@@ -9,8 +9,8 @@ class NestedTest extends TestCase
 {
     protected $jsonPath1;
     protected $jsonPath2;
-    protected $pathToYaml1;
-    protected $pathToYaml2;
+    protected $YamlPath1;
+    protected $YamlPath2;
     protected $expectedStylishString;
 
     public function getFixtureFullPath($fixtureName):string
