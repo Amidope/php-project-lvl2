@@ -6,7 +6,7 @@ use function Php\Project\Lvl2\Functions\buildNode;
 use function Php\Project\Lvl2\Functions\treeSort;
 use function Docopt\dump as dumperDocopt;
 
-function buildTree($arr1, $arr2 = "")
+function buildTree($arr1, $arr2 = [])
 {
     $result = [];
     if (!$arr2) {

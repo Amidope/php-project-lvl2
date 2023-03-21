@@ -69,13 +69,13 @@ function gendiff($pathToFile1, $pathToFile2)
     $file1 = getDataByExtension($pathToFile1);
     $file2 = getDataByExtension($pathToFile2);
     $output = checkForEmptyness($file1, $file2);
-
+    
     if ($output) {
         return $output;
     }
 
     $tree = buildTree($file1, $file2);
-    //dump($tree);
+    dump($tree);
     $res = stylish($tree);
-    dump($res);
+    return $res;
 }
