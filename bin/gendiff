@@ -4,14 +4,15 @@
 $autoloadPath1 = __DIR__ . '/../../autoload.php';
 $autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
 if (file_exists($autoloadPath1)) {
-    require_once $autoloadPath1;
+    require_once($autoloadPath1);
 } else {
-    require_once $autoloadPath2;
+    require_once($autoloadPath2);
 }
 
 use function Php\Project\Lvl2\Functions\gendiff;
 use function Php\Project\Lvl2\Functions\getFilesPath;
 use function Php\Project\Lvl2\Functions\getDataByExtension;
+use function Php\Project\Lvl2\Functions\checkForEmptyness;
 
 $doc = <<<DOC
 Generate diff
@@ -28,18 +29,21 @@ Options:
 
 DOC;
 // <argument> ARGUMENT command -o --option [optional elements] (required elements) (mutually exclusive | elements)
-//require('../vendor/docopt/docopt/src/docopt.php');
 
 $args = Docopt::handle($doc, ['version'=>'gendiff 0.1']);
 
-
-
-//foreach ($args as $k=>$v)
-//    echo $k.': '.json_encode($v).PHP_EOL;
 $pathsToFiles = getFilesPath();
-
 
 [$pathToFile1, $pathToFile2] = $pathsToFiles;
 
-$diff = gendiff($pathToFile1, $pathToFile2);
-//print_r($diff);
+$file1 = getDataByExtension($pathToFile1);
+$file2 = getDataByExtension($pathToFile2);
+$output = checkForEmptyness($file1, $file2);
+
+if ($output) {
+    $diff = $output;
+} else {
+    $diff = gendiff($file1, $file2);
+}
+
+print_r($diff);
