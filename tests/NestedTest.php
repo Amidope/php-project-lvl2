@@ -11,8 +11,8 @@ class NestedTest extends TestCase
     protected $jsonPath2;
     protected $YamlPath1;
     protected $YamlPath2;
-    protected $expectedStylishString;
-
+    protected $expectedStylish;
+    protected $expectedPlain;
     public function getFixtureFullPath($fixtureName):string
     {
         $parts = [__DIR__, 'fixtures', $fixtureName];
@@ -26,7 +26,7 @@ class NestedTest extends TestCase
         $this->YamlPath1 = $this->getFixtureFullPath('nestedFile1.yml');
         $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');        
         
-        $this->expectedStylishString = <<<RES
+        $this->expectedStylish = <<<RES
         {
             common: {
               + follow: false
@@ -72,11 +72,29 @@ class NestedTest extends TestCase
             }
         }
         RES;
+        $this->expectedPlain = <<<PL
+        Property 'common.follow' was added with value: false
+        Property 'common.setting2' was removed
+        Property 'common.setting3' was updated. From true to null
+        Property 'common.setting4' was added with value: 'blah blah'
+        Property 'common.setting5' was added with value: [complex value]
+        Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+        Property 'common.setting6.ops' was added with value: 'vops'
+        Property 'group1.baz' was updated. From 'bas' to 'bars'
+        Property 'group1.nest' was updated. From [complex value] to 'str'
+        Property 'group2' was removed
+        Property 'group3' was added with value: [complex value]
+        PL;
     }
     
-    public function testNestedDiff():void
+
+    public function testStylish():void
     {
-        $this->assertEquals($this->expectedStylishString, gendiff($this->jsonPath1, $this->jsonPath2));
+        $this->assertEquals($this->expectedStylish, gendiff($this->jsonPath1, $this->jsonPath2, 'stylish'));
+    }
+    public function testPlain():void
+    {
+        $this->assertEquals($this->expectedPlain, gendiff($this->jsonPath1, $this->jsonPath2, 'plain'));
     }
 }
 
