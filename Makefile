@@ -10,8 +10,8 @@ lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src bin
 lint-diff:
 	composer exec --verbose phpcs -- --standard=PSR12 --report=diff src bin
-cbf:
-	composer exec phpcbf src/builder.php
+lint-fix:
+	composer exec --verbose phpcbf -- --standard=PSR12 src
 test:
 	composer exec --verbose phpunit tests
 test-coverage:
