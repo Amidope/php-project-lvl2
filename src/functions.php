@@ -9,13 +9,8 @@ use function Php\Project\Lvl2\Parsers\parseYaml;
 use function Php\Project\Lvl2\Builder\buildTree;
 use function Php\Project\Lvl2\Formatters\stylish;
 use function Php\Project\Lvl2\Formatters\plain;
+use function Php\Project\Lvl2\Formatters\toJson;
 use function Functional\reduce_left;
-
-function getFilesPath()
-{
-    #TODO: doopt input parse
-    return [$_SERVER['argv'][1], $_SERVER['argv'][2]];
-}
 
 function getDataByExtension($pathToFile)
 {
@@ -26,15 +21,15 @@ function getDataByExtension($pathToFile)
     }
 }
 
-function checkForEmptyness($file1, $file2)
+function checkForEmptyness($arr1, $arr2)
 {
-    if (!$file1 && !$file2) {
+    if (!$arr1 && !$arr2) {
         return "Both files are empty";
     }
-    if (!$file1) {
+    if (!$arr1) {
         return "First file is empty";
     }
-    if (!$file2) {
+    if (!$arr2) {
         return "Second file is empty";
     }
     return "";
@@ -53,11 +48,10 @@ function buildNode($key, $val, string $sign = " ")
 
 function findPair($col, $key)
 {
-    
+
     return filter(
         $col,
-        function ($item, $ind, $col) use ($key)
-        {
+        function ($item, $ind, $col) use ($key) {
             if ($item['processed'] ?? false) {
                 return false;
             }
@@ -88,7 +82,7 @@ function stringifyValue($val)
 
 function reduceWithFor(array $col, callable $callback, $initial = null)
 {
-    for ($index = 0; $index < count($col); $index++) { 
+    for ($index = 0; $index < count($col); $index++) {
         $initial = $callback($col[$index], $index, $col, $initial);
     }
     return $initial;
@@ -96,12 +90,12 @@ function reduceWithFor(array $col, callable $callback, $initial = null)
 
 function stringifyPlain($path, $node1, $node2)
 {
-    
+
     ['key' => $key1, 'value' => $val1, 'sign' => $sign] = $node1;
     $val1 = stringifyValue($val1);
 
     if ($node1 && $node2) {
-        ['key' => $key2, 'value' => $val2] = $node2;        
+        ['key' => $key2, 'value' => $val2] = $node2;
         $val2 = stringifyValue($val2);
         return "Property '{$path}' was updated. From {$val1} to {$val2}";
     }
@@ -113,20 +107,34 @@ function stringifyPlain($path, $node1, $node2)
 
 function getDiffByFormat($tree, $format)
 {
-    switch ($format) {
-        case 'stylish':
-            return stylish($tree);
-        case 'plain':
-            return plain($tree);
-        case 'json':
-            return plain($tree);
-        # TODO : wrtie json func    
-    }
+     return match ($format) {
+        'stylish' => stylish($tree),
+        'plain' => plain($tree),
+        'json' => toJson($tree)
+     };
 }
 
-
-function gendiff($arr1, $arr2, $format = 'stylish')
+function isValidFormat($format)
 {
+    return match ($format) {
+        'stylish', 'plain', 'json' => true,
+        default => false
+    };
+}
+
+function gendiff($pathToFile1, $pathToFile2, $format = 'stylish')
+{
+    $arr1 = getDataByExtension($pathToFile1);
+    $arr2 = getDataByExtension($pathToFile2);
+    $message = checkForEmptyness($arr1, $arr2);
+
+    if ($message) {
+        return $message;
+    }
+    if (!isValidFormat($format)) {
+        return "Invalid format\n";
+    }
+
     $tree = buildTree($arr1, $arr2);
     return getDiffByFormat($tree, $format);
 }
