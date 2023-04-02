@@ -10,9 +10,6 @@ if (file_exists($autoloadPath1)) {
 }
 
 use function Php\Project\Lvl2\Functions\gendiff;
-use function Php\Project\Lvl2\Functions\getFilesPath;
-use function Php\Project\Lvl2\Functions\getDataByExtension;
-use function Php\Project\Lvl2\Functions\checkForEmptyness;
 
 $doc = <<<DOC
 Generate diff
@@ -30,20 +27,14 @@ Options:
 DOC;
 // <argument> ARGUMENT command -o --option [optional elements] (required elements) (mutually exclusive | elements)
 
-$args = Docopt::handle($doc, ['version'=>'gendiff 0.1']);
+$params = Docopt::handle($doc, ['version'=>'gendiff 0.1']);
+$args = $params->args;
 
-$pathsToFiles = getFilesPath();
+[
+    "<firstFile>" => $pathToFile1,
+    "<secondFile>" => $pathToFile2,
+    "--format" => $format    
+] = $args;
+$output = gendiff($pathToFile1, $pathToFile2, $format);
 
-[$pathToFile1, $pathToFile2] = $pathsToFiles;
-
-$file1 = getDataByExtension($pathToFile1);
-$file2 = getDataByExtension($pathToFile2);
-$output = checkForEmptyness($file1, $file2);
-
-if ($output) {
-    $diff = $output;
-} else {
-    $diff = gendiff($file1, $file2);
-}
-
-print_r($diff);
+print_r($output);
