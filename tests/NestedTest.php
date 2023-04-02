@@ -13,6 +13,8 @@ class NestedTest extends TestCase
     protected $YamlPath2;
     protected $expectedStylish;
     protected $expectedPlain;
+    protected $expectedJson;
+
     public function getFixtureFullPath($fixtureName):string
     {
         $parts = [__DIR__, 'fixtures', $fixtureName];
@@ -24,8 +26,9 @@ class NestedTest extends TestCase
         $this->jsonPath1 = $this->getFixtureFullPath('nestedFile1.json');
         $this->jsonPath2 = $this->getFixtureFullPath('nestedFile2.json');
         $this->YamlPath1 = $this->getFixtureFullPath('nestedFile1.yml');
-        $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');        
-        
+        $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');  
+        $this->expectedJson = file_get_contents($this->getFixtureFullPath('formatted.json'));
+
         $this->expectedStylish = <<<RES
         {
             common: {
@@ -95,6 +98,10 @@ class NestedTest extends TestCase
     public function testPlain():void
     {
         $this->assertEquals($this->expectedPlain, gendiff($this->jsonPath1, $this->jsonPath2, 'plain'));
+    }
+    public function testToJson():void
+    {
+        $this->assertEquals($this->expectedJson, gendiff($this->jsonPath1, $this->jsonPath2, 'json'));
     }
 }
 
