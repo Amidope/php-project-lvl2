@@ -9,7 +9,6 @@ use function Php\Project\Lvl2\Functions\markAsProcessed;
 use function Php\Project\Lvl2\Functions\stringifyPlain;
 use function Php\Project\Lvl2\Functions\reduceWithFor;
 
-
 function stylish($node, $indent = 0, $spacesCount = 4)
 {
     $lineIndent = str_repeat(" ", $indent + $spacesCount - 2);
@@ -22,7 +21,6 @@ function stylish($node, $indent = 0, $spacesCount = 4)
             $valueString = is_array($value)
                 ? stylish($value, $indent + $spacesCount)
                 : trim(var_export($value, true), "'");
-            
             $valueString = $valueString === "" ? $valueString : " {$valueString}";
             $acc .= "{$lineIndent}{$item['sign']} {$item['key']}:{$valueString}\n";
             return $acc;
@@ -36,18 +34,17 @@ function stylish($node, $indent = 0, $spacesCount = 4)
 
 function plain($tree)
 {
-    $iter = function($tree, $path = '') use (&$iter)
-    {
+    $iter = function ($tree, $path = '') use (&$iter) {
         return reduceWithFor(
             $tree,
-            function($item, $index, &$col, $acc) use ($path, $iter) {
+            function ($item, $index, &$col, $acc) use ($path, $iter) {
                 $key = $item['key'];
                 $val = $item['value'];
                 $sign = $item['sign'];
                 if (array_key_exists('processed', $item)) {
                     return $acc;
                 }
-                markAsProcessed($col, $index);                
+                markAsProcessed($col, $index);
                 $path = $path ? "{$path}.{$key}" : $key;
 
                 if ($sign === ' ') {
@@ -69,11 +66,28 @@ function plain($tree)
             },
             []
         );
-        //dump($tree);
     };
     $arr = $iter($tree);
 
     $res = implode("\n", $arr);
-    // dump($res);
-return $res;
+    return $res;
+}
+
+function toJson($tree)
+{
+    $iter = function ($tree) use (&$iter) {
+        return reduce_left(
+            $tree,
+            function ($item, $ind, $col, $acc) use (&$iter) {
+                $value = $item['value'];
+                $key = "{$item['sign']} {$item['key']}";
+                $value = is_array($value) ? $iter($value) : $value;
+                $acc[$key] = $value;
+                return $acc;
+            },
+            []
+        );
+    };
+    $arr = $iter($tree);
+    return json_encode($arr, JSON_PRETTY_PRINT);
 }
