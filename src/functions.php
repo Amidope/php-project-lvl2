@@ -1,16 +1,14 @@
 <?php
 
-namespace Php\Project\Lvl2\Functions;
+namespace Differ\Functions;
 
 use function Docopt\dump as dumperDocopt;
 use function Functional\filter;
-use function Php\Project\Lvl2\Parsers\parseJson;
-use function Php\Project\Lvl2\Parsers\parseYaml;
-use function Php\Project\Lvl2\Builder\buildTree;
-use function Php\Project\Lvl2\Formatters\stylish;
-use function Php\Project\Lvl2\Formatters\plain;
-use function Php\Project\Lvl2\Formatters\toJson;
-use function Functional\reduce_left;
+use function Differ\Parsers\parseJson;
+use function Differ\Parsers\parseYaml;
+use function Differ\Formatters\stylish;
+use function Differ\Formatters\plain;
+use function Differ\Formatters\toJson;
 
 function getDataByExtension($pathToFile)
 {
@@ -55,7 +53,7 @@ function findPair($col, $key)
             if ($item['processed'] ?? false) {
                 return false;
             }
-            return $item['key'] === $key ?: false;
+            return $item['key'] === $key;
         }
     );
 }
@@ -90,7 +88,6 @@ function reduceWithFor(array $col, callable $callback, $initial = null)
 
 function stringifyPlain($path, $node1, $node2)
 {
-
     ['key' => $key1, 'value' => $val1, 'sign' => $sign] = $node1;
     $val1 = stringifyValue($val1);
 
@@ -122,19 +119,3 @@ function isValidFormat($format)
     };
 }
 
-function gendiff($pathToFile1, $pathToFile2, $format = 'stylish')
-{
-    $arr1 = getDataByExtension($pathToFile1);
-    $arr2 = getDataByExtension($pathToFile2);
-    $message = checkForEmptyness($arr1, $arr2);
-
-    if ($message) {
-        return $message;
-    }
-    if (!isValidFormat($format)) {
-        return "Invalid format\n";
-    }
-
-    $tree = buildTree($arr1, $arr2);
-    return getDiffByFormat($tree, $format);
-}

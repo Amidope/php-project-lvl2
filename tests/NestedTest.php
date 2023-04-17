@@ -1,9 +1,9 @@
 <?php
 
-namespace Php\Project\Lvl2\Tests;
+namespace Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
-use function Php\Project\Lvl2\Functions\gendiff;
+use function Differ\Functions\genDiff;
 
 class NestedTest extends TestCase
 {
@@ -93,15 +93,15 @@ class NestedTest extends TestCase
 
     public function testStylish():void
     {
-        $this->assertEquals($this->expectedStylish, gendiff($this->jsonPath1, $this->jsonPath2, 'stylish'));
+        $this->assertEquals($this->expectedStylish, genDiff($this->jsonPath1, $this->jsonPath2, 'stylish'));
     }
     public function testPlain():void
     {
-        $this->assertEquals($this->expectedPlain, gendiff($this->jsonPath1, $this->jsonPath2, 'plain'));
+        $this->assertEquals($this->expectedPlain, genDiff($this->jsonPath1, $this->jsonPath2, 'plain'));
     }
     public function testToJson():void
     {
-        $this->assertEquals($this->expectedJson, gendiff($this->jsonPath1, $this->jsonPath2, 'json'));
+        $this->assertEquals($this->expectedJson, genDiff($this->jsonPath1, $this->jsonPath2, 'json'));
     }
 }
 

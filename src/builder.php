@@ -1,9 +1,9 @@
 <?php
 
-namespace Php\Project\Lvl2\Builder;
+namespace Differ\Builder;
 
-use function Php\Project\Lvl2\Functions\buildNode;
-use function Php\Project\Lvl2\Functions\treeSort;
+use function Differ\Functions\buildNode;
+use function Differ\Functions\treeSort;
 use function Docopt\dump as dumperDocopt;
 
 function buildTree($arr1, $arr2 = [])

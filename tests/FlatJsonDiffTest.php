@@ -1,9 +1,9 @@
 <?php
 
-namespace Php\Project\Lvl2\Tests;
+namespace Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
-use function Php\Project\Lvl2\Functions\gendiff;
+use function Differ\Functions\genDiff;
 
 class FlatJsonDiffTest extends TestCase
 {
@@ -50,20 +50,20 @@ class FlatJsonDiffTest extends TestCase
 
     public function testJsonGenDiff():void
     {
-        $this->assertEquals($this->expectedFlatGendiff, gendiff($this->jsonPath1, $this->jsonPath2));
+        $this->assertEquals($this->expectedFlatGendiff, genDiff($this->jsonPath1, $this->jsonPath2));
     }
     public function testEmptyJsonGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstEmptyFile, gendiff($this->pathToEmptyJson, $this->jsonPath2));
-        $this->assertEquals($this->expectedSecondEmptyFile, gendiff($this->jsonPath1, $this->pathToEmptyJson));
+        $this->assertEquals($this->expectedFirstEmptyFile, genDiff($this->pathToEmptyJson, $this->jsonPath2));
+        $this->assertEquals($this->expectedSecondEmptyFile, genDiff($this->jsonPath1, $this->pathToEmptyJson));
     }
     public function testFlatYamlGenDiff():void
     {
-        $this->assertEquals($this->expectedFlatGendiff, gendiff($this->pathToYaml1, $this->pathToYaml2));
+        $this->assertEquals($this->expectedFlatGendiff, genDiff($this->pathToYaml1, $this->pathToYaml2));
     }
     public function testEmptyYamlGenDiff():void
     {
-        $this->assertEquals($this->expectedFirstEmptyFile, gendiff($this->pathToEmptyYaml, $this->pathToYaml2));
-        $this->assertEquals($this->expectedSecondEmptyFile, gendiff($this->pathToYaml1, $this->pathToEmptyYaml));
+        $this->assertEquals($this->expectedFirstEmptyFile, genDiff($this->pathToEmptyYaml, $this->pathToYaml2));
+        $this->assertEquals($this->expectedSecondEmptyFile, genDiff($this->pathToYaml1, $this->pathToEmptyYaml));
     }
 }

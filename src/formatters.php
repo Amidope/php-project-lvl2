@@ -1,13 +1,13 @@
 <?php
 
-namespace Php\Project\Lvl2\Formatters;
+namespace Differ\Formatters;
 
 use function Docopt\dump as dumperDocopt;
 use function Functional\reduce_left;
-use function Php\Project\Lvl2\Functions\findPair;
-use function Php\Project\Lvl2\Functions\markAsProcessed;
-use function Php\Project\Lvl2\Functions\stringifyPlain;
-use function Php\Project\Lvl2\Functions\reduceWithFor;
+use function Differ\Functions\findPair;
+use function Differ\Functions\markAsProcessed;
+use function Differ\Functions\stringifyPlain;
+use function Differ\Functions\reduceWithFor;
 
 function stylish($node, $indent = 0, $spacesCount = 4)
 {
