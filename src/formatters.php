@@ -17,6 +17,7 @@ function stylish($node, $indent = 0, $spacesCount = 4)
         $node,
         function ($acc, $item) use ($lineIndent, $indent, $spacesCount) {
             $value = $item['value'];
+            $value = $value === "" ? " " : $value;
             $value = is_null($value) ? "null" : $value;
             $valueString = is_array($value)
                 ? stylish($value, $indent + $spacesCount)
