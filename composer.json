@@ -22,7 +22,8 @@
             "src/functions.php",
             "src/parsers.php",
             "src/builder.php",
-            "src/formatters.php"
+            "src/formatters.php",
+            "src/differ.php"
         ]
     },
     "require-dev": {
