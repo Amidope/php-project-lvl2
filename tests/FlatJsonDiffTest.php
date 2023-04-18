@@ -3,6 +3,7 @@
 namespace Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function Differ\Differ\genDiff;
 
 class FlatJsonDiffTest extends TestCase
@@ -18,13 +19,13 @@ class FlatJsonDiffTest extends TestCase
     protected $expectedSecondEmptyFile;
     protected $expectedBothEmpty;
 
-    public function getFixtureFullPath($fixtureName):string
+    public function getFixtureFullPath($fixtureName): string
     {
         $parts = [__DIR__, 'fixtures', $fixtureName];
         return realpath(implode('/', $parts));
     }
 
-    public function setUp():void
+    public function setUp(): void
     {
         $this->jsonPath1 = $this->getFixtureFullPath('flat1.json');
         $this->jsonPath2 = $this->getFixtureFullPath('flat2.json');
@@ -48,20 +49,20 @@ class FlatJsonDiffTest extends TestCase
         $this->expectedBothEmpty = "Both files are empty";
     }
 
-    public function testJsonGenDiff():void
+    public function testJsonGenDiff(): void
     {
         $this->assertEquals($this->expectedFlatGendiff, genDiff($this->jsonPath1, $this->jsonPath2));
     }
-    public function testEmptyJsonGenDiff():void
+    public function testEmptyJsonGenDiff(): void
     {
         $this->assertEquals($this->expectedFirstEmptyFile, genDiff($this->pathToEmptyJson, $this->jsonPath2));
         $this->assertEquals($this->expectedSecondEmptyFile, genDiff($this->jsonPath1, $this->pathToEmptyJson));
     }
-    public function testFlatYamlGenDiff():void
+    public function testFlatYamlGenDiff(): void
     {
         $this->assertEquals($this->expectedFlatGendiff, genDiff($this->pathToYaml1, $this->pathToYaml2));
     }
-    public function testEmptyYamlGenDiff():void
+    public function testEmptyYamlGenDiff(): void
     {
         $this->assertEquals($this->expectedFirstEmptyFile, genDiff($this->pathToEmptyYaml, $this->pathToYaml2));
         $this->assertEquals($this->expectedSecondEmptyFile, genDiff($this->pathToYaml1, $this->pathToEmptyYaml));

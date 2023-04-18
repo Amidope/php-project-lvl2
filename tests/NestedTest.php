@@ -3,6 +3,7 @@
 namespace Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function Differ\Differ\genDiff;
 
 class NestedTest extends TestCase
@@ -15,7 +16,7 @@ class NestedTest extends TestCase
     protected $expectedPlain;
     protected $expectedJson;
 
-    public function getFixtureFullPath($fixtureName):string
+    public function getFixtureFullPath($fixtureName): string
     {
         $parts = [__DIR__, 'fixtures', $fixtureName];
         return realpath(implode('/', $parts));
@@ -26,7 +27,7 @@ class NestedTest extends TestCase
         $this->jsonPath1 = $this->getFixtureFullPath('nestedFile1.json');
         $this->jsonPath2 = $this->getFixtureFullPath('nestedFile2.json');
         $this->YamlPath1 = $this->getFixtureFullPath('nestedFile1.yml');
-        $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');  
+        $this->YamlPath2 = $this->getFixtureFullPath('nestedFile2.yml');
         $this->expectedJson = file_get_contents($this->getFixtureFullPath('formatted.json'));
 
         $this->expectedStylish = <<<RES
@@ -89,19 +90,18 @@ class NestedTest extends TestCase
         Property 'group3' was added with value: [complex value]
         PL;
     }
-    
 
-    public function testStylish():void
+
+    public function testStylish(): void
     {
         $this->assertEquals($this->expectedStylish, genDiff($this->jsonPath1, $this->jsonPath2, 'stylish'));
     }
-    public function testPlain():void
+    public function testPlain(): void
     {
         $this->assertEquals($this->expectedPlain, genDiff($this->jsonPath1, $this->jsonPath2, 'plain'));
     }
-    public function testToJson():void
+    public function testToJson(): void
     {
         $this->assertEquals($this->expectedJson, genDiff($this->jsonPath1, $this->jsonPath2, 'json'));
     }
 }
-
