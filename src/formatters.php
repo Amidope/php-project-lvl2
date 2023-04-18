@@ -22,7 +22,7 @@ function stylish($node, $indent = 0, $spacesCount = 4)
             $valueString = is_array($val)
                 ? stylish($val, $indent + $spacesCount)
                 : trim(var_export($val, true), "'");
-//            $valueString = $valueString === "" ? $valueString : " {$valueString}";
+            $valueString = $valueString === "" ? $valueString : " {$valueString}";
             $acc .= "{$lineIndent}{$item['sign']} {$item['key']}:{$valueString}\n";
             return $acc;
         },
