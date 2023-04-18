@@ -118,4 +118,3 @@ function isValidFormat($format)
         default => false
     };
 }
-
