@@ -6,7 +6,7 @@ use function Differ\Functions\buildNode;
 use function Differ\Functions\treeSort;
 use function Docopt\dump as dumperDocopt;
 
-function buildTree($arr1, $arr2 = [])
+function buildTree(array $arr1, array $arr2 = [])
 {
     $result = [];
     if (!$arr2) {

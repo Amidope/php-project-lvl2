@@ -9,7 +9,7 @@ use function Differ\Functions\markAsProcessed;
 use function Differ\Functions\stringifyPlain;
 use function Differ\Functions\reduceWithFor;
 
-function stylish($node, $indent = 0, $spacesCount = 4)
+function stylish(array $node, int $indent = 0, int $spacesCount = 4)
 {
     $lineIndent = str_repeat(" ", $indent + $spacesCount - 2);
 
@@ -31,7 +31,7 @@ function stylish($node, $indent = 0, $spacesCount = 4)
 }
 
 
-function plain($tree)
+function plain(array $tree)
 {
     $iter = function ($tree, $path = '') use (&$iter) {
         return reduceWithFor(
@@ -72,7 +72,7 @@ function plain($tree)
     return $res;
 }
 
-function toJson($tree)
+function toJson(array $tree)
 {
     $iter = function ($tree) use (&$iter) {
         return reduce_left(

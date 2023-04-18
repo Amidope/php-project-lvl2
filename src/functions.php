@@ -10,7 +10,7 @@ use function Differ\Formatters\stylish;
 use function Differ\Formatters\plain;
 use function Differ\Formatters\toJson;
 
-function getDataByExtension($pathToFile)
+function getDataByExtension(string $pathToFile)
 {
     if (str_ends_with($pathToFile, 'json')) {
         return parseJson($pathToFile);
@@ -19,7 +19,7 @@ function getDataByExtension($pathToFile)
     }
 }
 
-function checkForEmptyness($arr1, $arr2)
+function checkForEmptyness(array $arr1, array $arr2)
 {
     if (!$arr1 && !$arr2) {
         return "Both files are empty";
@@ -33,18 +33,18 @@ function checkForEmptyness($arr1, $arr2)
     return "";
 }
 
-function treeSort($tree)
+function treeSort(array $tree)
 {
     usort($tree, fn($item1, $item2) => strcmp($item1["key"], $item2["key"]));
     return $tree;
 }
 
-function buildNode($key, $val, string $sign = " ")
+function buildNode(mixed $key, mixed $val, string $sign = " ")
 {
     return ['sign' => $sign, "key" => $key, 'value' => $val];
 }
 
-function findPair($col, $key)
+function findPair(array $col, mixed $key)
 {
 
     return filter(
@@ -58,12 +58,12 @@ function findPair($col, $key)
     );
 }
 
-function markAsProcessed(&$col, $index)
+function markAsProcessed(array &$col, int $index)
 {
     $col[$index]['processed'] = true;
 }
 
-function stringifyValue($val)
+function stringifyValue(mixed $val)
 {
     if (is_array($val)) {
         return "[complex value]";
@@ -86,7 +86,7 @@ function reduceWithFor(array $col, callable $callback, $initial = null)
     return $initial;
 }
 
-function stringifyPlain($path, $node1, $node2)
+function stringifyPlain(string $path, array $node1, array $node2)
 {
     ['key' => $key1, 'value' => $val1, 'sign' => $sign] = $node1;
     $val1 = stringifyValue($val1);
@@ -102,7 +102,7 @@ function stringifyPlain($path, $node1, $node2)
     return "Property '{$path}' was removed";
 }
 
-function getDiffByFormat($tree, $format)
+function getDiffByFormat(array $tree, string $format)
 {
      return match ($format) {
         'stylish' => stylish($tree),
@@ -111,7 +111,7 @@ function getDiffByFormat($tree, $format)
      };
 }
 
-function isValidFormat($format)
+function isValidFormat(string $format)
 {
     return match ($format) {
         'stylish', 'plain', 'json' => true,

@@ -8,7 +8,7 @@ use function Differ\Functions\isValidFormat;
 use function Differ\Builder\BuildTree;
 use function Differ\Functions\getDiffByFormat;
 
-function genDiff($pathToFile1, $pathToFile2, $format = 'stylish'): string
+function genDiff(string $pathToFile1, string $pathToFile2, $format = 'stylish'): string
 {
     $arr1 = getDataByExtension($pathToFile1);
     $arr2 = getDataByExtension($pathToFile2);

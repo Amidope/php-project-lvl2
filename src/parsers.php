@@ -4,11 +4,11 @@ namespace Differ\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parseJson($pathToFile)
+function parseJson(string $pathToFile)
 {
     return json_decode(file_get_contents($pathToFile), true);
 }
-function parseYaml($pathToFile)
+function parseYaml(string $pathToFile)
 {
     return Yaml::parse(file_get_contents($pathToFile));
 }
