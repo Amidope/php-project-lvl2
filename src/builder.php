@@ -4,7 +4,6 @@ namespace Differ\Builder;
 
 use function Differ\Functions\buildNode;
 use function Differ\Functions\treeSort;
-use function Docopt\dump as dumperDocopt;
 
 function buildTree(array $arr1, array $arr2 = [])
 {

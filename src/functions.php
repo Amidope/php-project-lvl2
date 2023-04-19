@@ -2,7 +2,6 @@
 
 namespace Differ\Functions;
 
-use function Docopt\dump as dumperDocopt;
 use function Functional\filter;
 use function Differ\Parsers\parseJson;
 use function Differ\Parsers\parseYaml;

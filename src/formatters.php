@@ -2,7 +2,6 @@
 
 namespace Differ\Formatters;
 
-use function Docopt\dump as dumperDocopt;
 use function Functional\reduce_left;
 use function Differ\Functions\findPair;
 use function Differ\Functions\markAsProcessed;
@@ -60,8 +59,7 @@ function plain(array $tree)
                     $pair = array_pop($pair);
                 }
                 $string = stringifyPlain($path, $item, $pair);
-                $acc[] = $string;
-                return $acc;
+                return $string;
             },
             []
         );
