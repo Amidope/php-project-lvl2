@@ -8,6 +8,7 @@ use function Differ\Parsers\parseYaml;
 use function Differ\Formatters\stylish;
 use function Differ\Formatters\plain;
 use function Differ\Formatters\toJson;
+use function Functional\reduce_left;
 
 function getDataByExtension(string $pathToFile)
 {
@@ -101,13 +102,31 @@ function stringifyPlain(string $path, array $node1, array $node2)
     return "Property '{$path}' was removed";
 }
 
-function getDiffByFormat(array $tree, string $format)
+function getDiffByFormat(array $tree, string $renderFormat)
 {
-     return match ($format) {
+     return match ($renderFormat) {
         'stylish' => stylish($tree),
         'plain' => plain($tree),
         'json' => toJson($tree)
      };
+}
+
+function hasValidExtension(string $fileName)
+{
+    $ext = ['json', 'yaml', 'yml'];
+    return in_array(pathinfo($fileName, PATHINFO_EXTENSION), $ext);
+}
+
+function checkExtensions(...$filePaths)
+{
+    return reduce_left(
+        $filePaths,
+        function ($path, $ind, $col, $acc) {
+            $ind++;
+            return hasValidExtension($path) ? $acc : "File {$ind} has invalid extension\n";
+        },
+        ""
+    );
 }
 
 function isValidFormat(string $format)
