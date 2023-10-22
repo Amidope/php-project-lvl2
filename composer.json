@@ -5,8 +5,7 @@
     "description": "hexlet php-package",
     "authors": [
         {
-            "name": "Amidope",
-            "email": "nozsen@mail.ru"
+            "name": "Amidope"
         }
     ],
     "require": {
