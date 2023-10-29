@@ -10,16 +10,12 @@ use function Differ\Formatters\plain;
 use function Differ\Formatters\toJson;
 use function Functional\reduce_left;
 
-function getDataByExtension(string $pathToFile)
+function getDataByExtension(string $pathToFile): array
 {
-    if (str_ends_with($pathToFile, 'json')) {
-        return parseJson($pathToFile);
-    } elseif (str_ends_with($pathToFile, 'yaml') || str_ends_with($pathToFile, 'yml')) {
-        return parseYaml($pathToFile);
-    }
+    return str_ends_with($pathToFile, 'json') ? parseJson($pathToFile) : parseYaml($pathToFile);
 }
 
-function checkForEmptyness(array $arr1, array $arr2)
+function checkForEmptyness(array $arr1, array $arr2): string
 {
     if (!$arr1 && !$arr2) {
         return "Both files are empty";
@@ -39,30 +35,6 @@ function treeSort(array $tree)
     return $tree;
 }
 
-function buildNode(mixed $key, mixed $val, string $sign = " ")
-{
-//    return ['sign' => $sign, "key" => $key, 'value' => $val];
-}
-
-function findPair(array $col, mixed $key)
-{
-
-    return filter(
-        $col,
-        function ($item, $ind, $col) use ($key) {
-            if ($item['processed'] ?? false) {
-                return false;
-            }
-            return $item['key'] === $key;
-        }
-    );
-}
-
-function markAsProcessed(array &$col, int $index)
-{
-    $col[$index]['processed'] = true;
-}
-
 function stringifyValue(mixed $val)
 {
     if (is_array($val)) {
@@ -78,13 +50,6 @@ function stringifyValue(mixed $val)
     return $string;
 }
 
-function reduceWithFor(array $col, callable $callback, $initial = null)
-{
-    for ($index = 0; $index < count($col); $index++) {
-        $initial = $callback($col[$index], $index, $col, $initial);
-    }
-    return $initial;
-}
 
 function stringifyPlain(string $path, array $node1, array $node2)
 {
@@ -102,7 +67,7 @@ function stringifyPlain(string $path, array $node1, array $node2)
     return "Property '{$path}' was removed";
 }
 
-function getDiffByFormat(array $tree, string $renderFormat)
+function getDiffByFormat(array $tree, string $renderFormat): string
 {
      return match ($renderFormat) {
         'stylish' => stylish($tree),
@@ -111,19 +76,18 @@ function getDiffByFormat(array $tree, string $renderFormat)
      };
 }
 
-function hasValidExtension(string $fileName)
+function hasValidExtension(string $fileName): bool
 {
-    $ext = ['json', 'yaml', 'yml'];
-    return in_array(pathinfo($fileName, PATHINFO_EXTENSION), $ext);
+    return in_array(pathinfo($fileName, PATHINFO_EXTENSION), ['json', 'yaml', 'yml']);
 }
 
-function checkExtensions(...$filePaths)
+function checkExtensions(...$filePaths): string
 {
     return reduce_left(
         $filePaths,
         function ($path, $ind, $col, $acc) {
             $ind++;
-            return hasValidExtension($path) ? $acc : "File {$ind} has invalid extension\n";
+            return hasValidExtension($path) ? $acc : $acc . "File {$ind} has invalid extension\n";
         },
         ""
     );
