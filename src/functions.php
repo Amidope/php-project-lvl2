@@ -41,7 +41,7 @@ function treeSort(array $tree)
 
 function buildNode(mixed $key, mixed $val, string $sign = " ")
 {
-    return ['sign' => $sign, "key" => $key, 'value' => $val];
+//    return ['sign' => $sign, "key" => $key, 'value' => $val];
 }
 
 function findPair(array $col, mixed $key)
@@ -129,10 +129,10 @@ function checkExtensions(...$filePaths)
     );
 }
 
-function isValidFormat(string $format)
+function isInvalidFormat(string $format): bool
 {
     return match ($format) {
-        'stylish', 'plain', 'json' => true,
-        default => false
+        'stylish', 'plain', 'json' => false,
+        default => true
     };
 }

@@ -5,9 +5,10 @@ namespace Differ\Differ;
 use function Differ\Functions\checkExtensions;
 use function Differ\Functions\getDataByExtension;
 use function Differ\Functions\checkForEmptyness;
-use function Differ\Functions\isValidFormat;
+use function Differ\Functions\isInvalidFormat;
 use function Differ\Builder\buildTree;
 use function Differ\Functions\getDiffByFormat;
+use function Functional\map;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $renderFormat = 'stylish'): string|bool
 {
@@ -17,7 +18,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $renderFormat 
 
     $extensionMessage = checkExtensions($pathToFile1, $pathToFile2);
     if ($extensionMessage) {
-      return $extensionMessage;
+        return $extensionMessage;
     }
 
     $arr1 = getDataByExtension($pathToFile1);
@@ -27,7 +28,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $renderFormat 
     if ($message) {
         return $message;
     }
-    if (!isValidFormat($renderFormat)) {
+    if (isInvalidFormat($renderFormat)) {
         return "Invalid format\n";
     }
 
