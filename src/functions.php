@@ -9,7 +9,7 @@ use function Differ\Formatters\formatToPlain;
 use function Differ\Formatters\formatToJson;
 use function Functional\reduce_left;
 
-function getDataByExtension(string $pathToFile): array
+function getDataByExtension(string $pathToFile): array | null
 {
     return str_ends_with($pathToFile, 'json') ? parseJson($pathToFile) : parseYaml($pathToFile);
 }
