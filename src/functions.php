@@ -31,7 +31,7 @@ function checkForEmptyness(array $arr1, array $arr2): string
 
 function treeSort(array $tree): array
 {
-    usort($tree, fn($item1, $item2) => strcmp($item1["key"], $item2["key"]));
+    ksort($tree);
     return $tree;
 }
 
@@ -43,8 +43,6 @@ function getDiffByFormat(array $tree, string $renderFormat): string
         'json' => formatToJson($tree)
      };
 }
-
-
 
 function hasValidExtension(string $fileName): bool
 {
@@ -69,4 +67,13 @@ function isInvalidFormat(string $format): bool
         'stylish', 'plain', 'json' => false,
         default => true
     };
+}
+function isList($value): bool
+{
+    if (is_array($value)) {
+        if (array_is_list($value)) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -2,6 +2,7 @@
 
 namespace Differ\Formatters;
 
+use function Differ\Functions\isList;
 use function Functional\reduce_left;
 
 function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int $spaceCount = 4): string
@@ -23,29 +24,31 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
         return "[\n{$result}{$closBracketIndent}]";
     }
 
-    $result = array_reduce(
+    $result = reduce_left(
         $tree,
-        function ($acc, $item) use ($indentBeforeSign, $indent, $spaceCount) {
+        function ($item, $nodeKey, $col, $acc) use ($indentBeforeSign, $indent, $spaceCount) {
             [
                 'type' => $type,
                 'value' => $nodeValue,
-                'isList' => $isList,
-                'key' => $nodeKey
             ] = $item;
-            $sign = getSignByType($type);
-
             if ($type === 'changed') {
                 ['oldValue' => $oldValue, 'newValue' => $newValue] = $nodeValue;
+                $oldIsList = isList($oldValue);
+                $newIsList = isList($newValue);
+
                 $oldValue = is_array($oldValue)
-                    ? formatToStylish($oldValue, $isList, $indent + $spaceCount)
+                    ? formatToStylish($oldValue, $oldIsList, $indent + $spaceCount)
                     : getPrimitiveValueAsString($oldValue);
                 $newValue = is_array($newValue)
-                    ? formatToStylish($newValue, $isList, $indent + $spaceCount)
+                    ? formatToStylish($newValue, $newIsList, $indent + $spaceCount)
                     : getPrimitiveValueAsString($newValue);
                 $renderedOld = "{$indentBeforeSign}- $nodeKey: {$oldValue}\n";
                 $renderedNew = "{$indentBeforeSign}+ $nodeKey: {$newValue}\n";
                 return "{$acc}{$renderedOld}{$renderedNew}";
             }
+            $isList = isList($nodeValue);
+            $sign = getSignByType($type);
+
             $renderedValue = is_array($nodeValue)
                 ? formatToStylish($nodeValue, $isList, $indent + $spaceCount)
                 : getPrimitiveValueAsString($nodeValue);
@@ -58,13 +61,12 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
 
 function formatToPlain(array $tree, $path = ''): string
 {
-    return array_reduce(
+    return reduce_left(
         $tree,
-        function ($acc, $item) use ($path) {
+        function ($item, $nodeKey, $col, $acc) use ($path) {
             [
                 'type' => $type,
                 'value' => $nodeValue,
-                'key' => $nodeKey
             ] = $item;
             $separator = $path ? '.' : '';
             $currentPath = "{$path}{$separator}{$nodeKey}";
@@ -72,7 +74,6 @@ function formatToPlain(array $tree, $path = ''): string
                 case 'updated':
                     return $acc . formatToPlain($nodeValue, $currentPath);
                 case 'changed':
-                    ['oldValue' => $oldValue, 'newValue' => $newValue] = $nodeValue;
                     return $acc . renderProperty($type, $currentPath, $nodeValue['oldValue'], $nodeValue['newValue']);
                 case 'added':
                 case 'deleted':
@@ -86,7 +87,6 @@ function formatToPlain(array $tree, $path = ''): string
 
 function formatToJson(array $tree): string
 {
-    dump($tree);
     return json_encode($tree, JSON_PRETTY_PRINT);
 }
 

@@ -30,7 +30,6 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $renderFormat 
     if (isInvalidFormat($renderFormat)) {
         return "Invalid format\n";
     }
-
     $tree = buildTree($arr1, $arr2);
     return getDiffByFormat($tree, $renderFormat);
 }
