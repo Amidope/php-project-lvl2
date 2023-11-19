@@ -2,6 +2,7 @@
 namespace Differ\Builder;
 use function Differ\Functions\treeSort;
 use function Functional\map;
+use function Differ\Functions\isAssocArray;
 
 function buildTree(mixed $data1, mixed $data2 = []): mixed
 {
@@ -48,13 +49,3 @@ function buildNode(string $type, string $key, mixed $val1, mixed $val2 = []): ar
     }
     return ['type' => $type, 'value' => buildTree($val1, $val2)];
 }
-function isAssocArray($value): bool
-{
-    if (is_array($value)) {
-        if (!array_is_list($value)) {
-            return true;
-        }
-    }
-    return false;
-}
-

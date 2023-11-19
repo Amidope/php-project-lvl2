@@ -61,7 +61,7 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
 
 function formatToPlain(array $tree, $path = ''): string
 {
-    return reduce_left(
+    $result = reduce_left(
         $tree,
         function ($item, $nodeKey, $col, $acc) use ($path) {
             [
@@ -83,6 +83,7 @@ function formatToPlain(array $tree, $path = ''): string
         },
         ''
     );
+    return $path === '' ? substr($result, 0,-2) : $result;
 }
 
 function formatToJson(array $tree): string
