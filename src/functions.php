@@ -2,7 +2,6 @@
 
 namespace Differ\Functions;
 
-use function Functional\filter;
 use function Differ\Parsers\parseJson;
 use function Differ\Parsers\parseYaml;
 use function Differ\Formatters\formatToStylish;
@@ -77,3 +76,13 @@ function isList($value): bool
     }
     return false;
 }
+function isAssocArray($value): bool
+{
+    if (is_array($value)) {
+        if (!array_is_list($value)) {
+            return true;
+        }
+    }
+    return false;
+}
+
