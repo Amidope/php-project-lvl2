@@ -16,3 +16,4 @@ group2:
   abc: 12345
   deep:
     id: 45
+"list": [404, 505]

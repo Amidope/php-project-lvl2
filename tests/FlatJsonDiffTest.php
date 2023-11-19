@@ -8,7 +8,7 @@ use function Differ\Differ\genDiff;
 
 class FlatJsonDiffTest extends TestCase
 {
-    protected $jsonPath1;
+    protected string $jsonPath1;
     protected $jsonPath2;
     protected $pathToEmptyJson;
     protected $pathToYaml1;

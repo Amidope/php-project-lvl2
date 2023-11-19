@@ -74,6 +74,10 @@ class NestedTest extends TestCase
                 }
                 fee: 100500
             }
+          - list: [
+                404,
+                505
+            ]
         }
         RES;
         $this->expectedPlain = <<<PL
@@ -88,6 +92,7 @@ class NestedTest extends TestCase
         Property 'group1.nest' was updated. From [complex value] to 'str'
         Property 'group2' was removed
         Property 'group3' was added with value: [complex value]
+        Property 'list' was removed\n
         PL;
     }
 

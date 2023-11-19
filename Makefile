@@ -4,8 +4,10 @@ dump:
 	composer dump-autoload
 validate:
 	composer validate
-gendiff:
+example:
 	./bin/gendiff tests/fixtures/nestedFile1.yml tests/fixtures/nestedFile2.yml
+gendiff:
+	./bin/gendiff
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src bin tests
 lint-diff:

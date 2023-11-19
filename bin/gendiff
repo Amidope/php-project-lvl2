@@ -22,7 +22,7 @@ Usage:
 Options:
     -h --help                     Show this screen
     -v --version                  Show version    
-    --format <fmt>                Report format [default: stylish]
+    --format <fmt>                Report format [default: json]
 
 DOC;
 // <argument> ARGUMENT command -o --option [optional elements] (required elements) (mutually exclusive | elements)
@@ -33,7 +33,7 @@ $args = $params->args;
 [
     "<firstFile>" => $pathToFile1,
     "<secondFile>" => $pathToFile2,
-    "--format" => $format    
+    "--format" => $format
 ] = $args;
 
 $output = genDiff($pathToFile1, $pathToFile2, $format);

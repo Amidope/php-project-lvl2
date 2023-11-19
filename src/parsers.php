@@ -12,3 +12,4 @@ function parseYaml(string $pathToFile)
 {
     return Yaml::parse(file_get_contents($pathToFile));
 }
+

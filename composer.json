@@ -9,9 +9,9 @@
         }
     ],
     "require": {
-        "docopt/docopt": "^1.0.4",
-        "lstrojny/functional-php": "^1.17",
-        "symfony/yaml": "^5.3"
+        "docopt/docopt": "@stable",
+        "lstrojny/functional-php": "@stable",
+        "symfony/yaml": "@stable"
     },
     "bin": [
         "bin/gendiff"
@@ -26,8 +26,8 @@
         ]
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "*",
-        "phpunit/phpunit": "^9.5",
-        "symfony/var-dumper": "^6.2"
+        "squizlabs/php_codesniffer": "@stable",
+        "phpunit/phpunit": "@stable",
+        "symfony/var-dumper": "@stable"
     }
 }

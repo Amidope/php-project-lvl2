@@ -5,9 +5,9 @@ namespace Differ\Functions;
 use function Functional\filter;
 use function Differ\Parsers\parseJson;
 use function Differ\Parsers\parseYaml;
-use function Differ\Formatters\stylish;
-use function Differ\Formatters\plain;
-use function Differ\Formatters\toJson;
+use function Differ\Formatters\formatToStylish;
+use function Differ\Formatters\formatToPlain;
+use function Differ\Formatters\formatToJson;
 use function Functional\reduce_left;
 
 function getDataByExtension(string $pathToFile): array
@@ -29,52 +29,22 @@ function checkForEmptyness(array $arr1, array $arr2): string
     return "";
 }
 
-function treeSort(array $tree)
+function treeSort(array $tree): array
 {
     usort($tree, fn($item1, $item2) => strcmp($item1["key"], $item2["key"]));
     return $tree;
 }
 
-function stringifyValue(mixed $val)
-{
-    if (is_array($val)) {
-        return "[complex value]";
-    }
-    //$val = is_null($val) ? 'null' : $val;
-    //$string = trim(var_export($val, true), "'");
-    $string = var_export($val, true);
-    // !is_string($sting) is invalid. each val must have own statement
-    if ($string === 'NULL') {
-        return strtolower($string);
-    }
-    return $string;
-}
-
-
-function stringifyPlain(string $path, array $node1, array $node2)
-{
-    ['key' => $key1, 'value' => $val1, 'sign' => $sign] = $node1;
-    $val1 = stringifyValue($val1);
-
-    if ($node1 && $node2) {
-        ['key' => $key2, 'value' => $val2] = $node2;
-        $val2 = stringifyValue($val2);
-        return "Property '{$path}' was updated. From {$val1} to {$val2}";
-    }
-    if ($sign === '+') {
-        return "Property '{$path}' was added with value: {$val1}";
-    }
-    return "Property '{$path}' was removed";
-}
-
 function getDiffByFormat(array $tree, string $renderFormat): string
 {
      return match ($renderFormat) {
-        'stylish' => stylish($tree),
-        'plain' => plain($tree),
-        'json' => toJson($tree)
+        'stylish' => formatToStylish($tree),
+        'plain' => formatToPlain($tree),
+        'json' => formatToJson($tree)
      };
 }
+
+
 
 function hasValidExtension(string $fileName): bool
 {

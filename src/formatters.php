@@ -3,88 +3,118 @@
 namespace Differ\Formatters;
 
 use function Functional\reduce_left;
-use function Differ\Functions\findPair;
-use function Differ\Functions\markAsProcessed;
-use function Differ\Functions\stringifyPlain;
-use function Differ\Functions\reduceWithFor;
 
-function stylish(array $node, int $indent = 0, int $spacesCount = 4)
+function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int $spaceCount = 4): string
 {
-    $lineIndent = str_repeat(" ", $indent + $spacesCount - 2);
+    $indentBeforeSign = str_repeat(" ", $indent + $spaceCount - 2);
+    $closBracketIndent = str_repeat(" ", $indent);
+
+    if ($isList) {
+        $lastKey = array_key_last($tree);
+        $result = reduce_left(
+            $tree,
+            function ($primitive, $key, $col, $acc) use ($indentBeforeSign, $indent, $spaceCount, $lastKey) {
+                $comma = $key === $lastKey ? '' : ',';
+                $value = getPrimitiveValueAsString($primitive);
+                return "{$acc}{$indentBeforeSign}  {$value}{$comma}\n";
+            },
+            ""
+        );
+        return "[\n{$result}{$closBracketIndent}]";
+    }
 
     $result = array_reduce(
-        $node,
-        function ($acc, $item) use ($lineIndent, $indent, $spacesCount) {
-            $value = $item['value'];
-            $val = is_null($value) ? "null" : $value;
-            $valueString = is_array($val)
-                ? stylish($val, $indent + $spacesCount)
-                : trim(var_export($val, true), "'");
-            $acc .= "{$lineIndent}{$item['sign']} {$item['key']}: {$valueString}\n";
-            return $acc;
+        $tree,
+        function ($acc, $item) use ($indentBeforeSign, $indent, $spaceCount) {
+            [
+                'type' => $type,
+                'value' => $nodeValue,
+                'isList' => $isList,
+                'key' => $nodeKey
+            ] = $item;
+            $sign = getSignByType($type);
+
+            if ($type === 'changed') {
+                ['oldValue' => $oldValue, 'newValue' => $newValue] = $nodeValue;
+                $oldValue = is_array($oldValue)
+                    ? formatToStylish($oldValue, $isList, $indent + $spaceCount)
+                    : getPrimitiveValueAsString($oldValue);
+                $newValue = is_array($newValue)
+                    ? formatToStylish($newValue, $isList, $indent + $spaceCount)
+                    : getPrimitiveValueAsString($newValue);
+                $renderedOld = "{$indentBeforeSign}- $nodeKey: {$oldValue}\n";
+                $renderedNew = "{$indentBeforeSign}+ $nodeKey: {$newValue}\n";
+                return "{$acc}{$renderedOld}{$renderedNew}";
+            }
+            $renderedValue = is_array($nodeValue)
+                ? formatToStylish($nodeValue, $isList, $indent + $spaceCount)
+                : getPrimitiveValueAsString($nodeValue);
+            return "{$acc}{$indentBeforeSign}{$sign} $nodeKey: {$renderedValue}\n";
         },
         ""
     );
-    $closBracketIndent = $lineIndent = str_repeat(" ", $indent);
     return "{\n{$result}{$closBracketIndent}}";
 }
 
-
-function plain(array $tree)
+function formatToPlain(array $tree, $path = ''): string
 {
-    $iter = function ($tree, $path = '') use (&$iter) {
-        return reduceWithFor(
-            $tree,
-            function ($item, $index, &$col, $acc) use ($path, $iter) {
-                $key = $item['key'];
-                $val = $item['value'];
-                $sign = $item['sign'];
-                if (array_key_exists('processed', $item)) {
-                    return $acc;
-                }
-                markAsProcessed($col, $index);
-                $path = $path ? "{$path}.{$key}" : $key;
-
-                if ($sign === ' ') {
-                    if (is_array($val)) {
-                        $formatted = $iter($val, $path);
-                        return [...$acc, ...$formatted];
-                    }
-                    return $acc;
-                }
-
-                $pair = findPair($col, $key);
-                if ($pair) {
-                    markAsProcessed($col, array_key_first($pair));
-                    $pair = array_pop($pair);
-                }
-                $string = stringifyPlain($path, $item, $pair);
-                return $string;
-            },
-            []
-        );
-    };
-    $arr = $iter($tree);
-
-    $res = implode("\n", $arr);
-    return $res;
+    return array_reduce(
+        $tree,
+        function ($acc, $item) use ($path) {
+            [
+                'type' => $type,
+                'value' => $nodeValue,
+                'key' => $nodeKey
+            ] = $item;
+            $separator = $path ? '.' : '';
+            $currentPath = "{$path}{$separator}{$nodeKey}";
+            switch ($type) {
+                case 'updated':
+                    return $acc . formatToPlain($nodeValue, $currentPath);
+                case 'changed':
+                    ['oldValue' => $oldValue, 'newValue' => $newValue] = $nodeValue;
+                    return $acc . renderProperty($type, $currentPath, $nodeValue['oldValue'], $nodeValue['newValue']);
+                case 'added':
+                case 'deleted':
+                    return $acc . renderProperty($type, $currentPath, $nodeValue);
+            }
+            return $acc;
+        },
+        ''
+    );
 }
 
-function toJson(array $tree)
+function formatToJson(array $tree): string
 {
-    $iter = function ($tree) use (&$iter) {
-        return reduce_left(
-            $tree,
-            function ($item, $ind, $col, $acc) use (&$iter) {
-                $value = $item['value'];
-                $key = "{$item['sign']} {$item['key']}";
-                $value = is_array($value) ? $iter($value) : $value;
-                $acc[$key] = $value;
-                return $acc;
-            },
-            []
-        );
+    dump($tree);
+    return json_encode($tree, JSON_PRETTY_PRINT);
+}
+
+function renderProperty(string $type, string $path, mixed $val1, mixed $val2 = []): string
+{
+    $stringValue1 = is_array($val1) ? '[complex value]' : getPrimitiveValueAsString($val1, false);
+    switch ($type) {
+        case 'changed':
+            $stringValue2 = is_array($val2) ? '[complex value]' : getPrimitiveValueAsString($val2, false);
+            return "Property '{$path}' was updated. From {$stringValue1} to {$stringValue2}\n";
+        case 'added':
+            return "Property '{$path}' was added with value: {$stringValue1}\n";
+    }
+    return "Property '{$path}' was removed\n";
+}
+
+function getPrimitiveValueAsString(mixed $val, bool $trim = true): string
+{
+    $char = $trim && is_string($val) ? "'" : '';
+    return is_null($val) ? 'null' : trim(var_export($val, true), $char);
+}
+
+function getSignByType(string $type): ?string
+{
+    return match ($type) {
+        'added' => '+',
+        'deleted' => '-',
+        'unchanged', 'updated' => ' ',
+        'changed' => null
     };
-    $arr = $iter($tree);
-    return json_encode($arr, JSON_PRETTY_PRINT);
 }
