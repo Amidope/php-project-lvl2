@@ -83,7 +83,7 @@ function formatToPlain(array $tree, $path = ''): string
         },
         ''
     );
-    return $path === '' ? substr($result, 0,-2) : $result;
+    return $path === '' ? substr($result, 0,-1) : $result;
 }
 
 function formatToJson(array $tree): string
