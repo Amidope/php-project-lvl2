@@ -1,5 +1,7 @@
 <?php
+
 namespace Differ\Builder;
+
 use function Differ\Functions\treeSort;
 use function Functional\map;
 use function Differ\Functions\isAssocArray;

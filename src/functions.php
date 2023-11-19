@@ -85,4 +85,3 @@ function isAssocArray($value): bool
     }
     return false;
 }
-
