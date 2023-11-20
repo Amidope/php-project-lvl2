@@ -14,18 +14,21 @@ function getDataByExtension(string $pathToFile): ?array
     return str_ends_with($pathToFile, 'json') ? parseJson($pathToFile) : parseYaml($pathToFile);
 }
 
-function checkForEmptyness(?array $arr1, ?array $arr2): string
+function throwErrors(string $filepath1, string $filepath2, string $format): void
 {
-    if (empty($arr1) && empty($arr2)) {
-        return "Both files are empty";
+    array_map(
+        function ($filepath) {
+            return is_readable($filepath) ?: throw new \Exception("File {$filepath} is not readable");
+        },
+        [$filepath1, $filepath2]
+    );
+    $errors = getExtensionErrorMessages($filepath1, $filepath2);
+    if (!empty($errors)) {
+        throw new \Exception($errors);
     }
-    if (empty($arr1)) {
-        return "First file is empty";
+    if (isInvalidFormat($format)) {
+        throw new \Exception("Invalid format\n");
     }
-    if (empty($arr2)) {
-        return "Second file is empty";
-    }
-    return "";
 }
 
 function treeSort(array $tree): array
@@ -48,7 +51,7 @@ function hasValidExtension(string $fileName): bool
     return in_array(pathinfo($fileName, PATHINFO_EXTENSION), ['json', 'yaml', 'yml'], true);
 }
 
-function checkExtensions(string ...$filePaths): string
+function getExtensionErrorMessages(string ...$filePaths): string
 {
     return reduce_left(
         $filePaths,
@@ -84,3 +87,4 @@ function isAssocArray(mixed $value): bool
     }
     return false;
 }
+
