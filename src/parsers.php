@@ -4,11 +4,13 @@ namespace Differ\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parseJson(string $pathToFile)
+function parseFile(string $pathToFile): array
 {
-    return json_decode(file_get_contents($pathToFile), true);
-}
-function parseYaml(string $pathToFile)
-{
-    return Yaml::parse(file_get_contents($pathToFile));
+    $fileData = file_get_contents($pathToFile);
+    $read = is_string($fileData) ? $fileData : '';
+    $extension = pathinfo($pathToFile, PATHINFO_EXTENSION);
+    if ($extension === 'json') {
+        return json_decode($read, true);
+    }
+    return Yaml::parse($read);
 }

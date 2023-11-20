@@ -2,17 +2,10 @@
 
 namespace Differ\Functions;
 
-use function Differ\Parsers\parseJson;
-use function Differ\Parsers\parseYaml;
 use function Differ\Formatters\formatToStylish;
 use function Differ\Formatters\formatToPlain;
 use function Differ\Formatters\formatToJson;
 use function Functional\reduce_left;
-
-function getDataByExtension(string $pathToFile): ?array
-{
-    return str_ends_with($pathToFile, 'json') ? parseJson($pathToFile) : parseYaml($pathToFile);
-}
 
 function throwErrors(string $filepath1, string $filepath2, string $format): void
 {
