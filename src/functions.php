@@ -9,20 +9,20 @@ use function Differ\Formatters\formatToPlain;
 use function Differ\Formatters\formatToJson;
 use function Functional\reduce_left;
 
-function getDataByExtension(string $pathToFile): array | null
+function getDataByExtension(string $pathToFile): ?array
 {
     return str_ends_with($pathToFile, 'json') ? parseJson($pathToFile) : parseYaml($pathToFile);
 }
 
-function checkForEmptyness(array $arr1, array $arr2): string
+function checkForEmptyness(?array $arr1, ?array $arr2): string
 {
-    if (!$arr1 && !$arr2) {
+    if (empty($arr1) && empty($arr2)) {
         return "Both files are empty";
     }
-    if (!$arr1) {
+    if (empty($arr1)) {
         return "First file is empty";
     }
-    if (!$arr2) {
+    if (empty($arr2)) {
         return "Second file is empty";
     }
     return "";
@@ -39,22 +39,21 @@ function getDiffByFormat(array $tree, string $renderFormat): string
      return match ($renderFormat) {
         'stylish' => formatToStylish($tree),
         'plain' => formatToPlain($tree),
-        'json' => formatToJson($tree)
+        default => formatToJson($tree)
      };
 }
 
 function hasValidExtension(string $fileName): bool
 {
-    return in_array(pathinfo($fileName, PATHINFO_EXTENSION), ['json', 'yaml', 'yml']);
+    return in_array(pathinfo($fileName, PATHINFO_EXTENSION), ['json', 'yaml', 'yml'], true);
 }
 
-function checkExtensions(...$filePaths): string
+function checkExtensions(string ...$filePaths): string
 {
     return reduce_left(
         $filePaths,
         function ($path, $ind, $col, $acc) {
-            $ind++;
-            return hasValidExtension($path) ? $acc : $acc . "File {$ind} has invalid extension\n";
+            return hasValidExtension($path) ? $acc : $acc . "File {${$ind++}} has invalid extension\n";
         },
         ""
     );
@@ -67,7 +66,7 @@ function isInvalidFormat(string $format): bool
         default => true
     };
 }
-function isList($value): bool
+function isList(mixed $value): bool
 {
     if (is_array($value)) {
         if (array_is_list($value)) {
@@ -76,7 +75,7 @@ function isList($value): bool
     }
     return false;
 }
-function isAssocArray($value): bool
+function isAssocArray(mixed $value): bool
 {
     if (is_array($value)) {
         if (!array_is_list($value)) {

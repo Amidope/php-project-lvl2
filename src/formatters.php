@@ -14,7 +14,7 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
         $lastKey = array_key_last($tree);
         $result = reduce_left(
             $tree,
-            function ($primitive, $key, $col, $acc) use ($indentBeforeSign, $indent, $spaceCount, $lastKey) {
+            function ($primitive, $key, $col, $acc) use ($indentBeforeSign, $lastKey) {
                 $comma = $key === $lastKey ? '' : ',';
                 $value = getPrimitiveValueAsString($primitive);
                 return "{$acc}{$indentBeforeSign}  {$value}{$comma}\n";
@@ -36,14 +36,15 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
                 $oldIsList = isList($oldValue);
                 $newIsList = isList($newValue);
 
-                $oldValue = is_array($oldValue)
+                $renderedOldValue = is_array($oldValue)
                     ? formatToStylish($oldValue, $oldIsList, $indent + $spaceCount)
                     : getPrimitiveValueAsString($oldValue);
-                $newValue = is_array($newValue)
+                $renderedNewValue = is_array($newValue)
                     ? formatToStylish($newValue, $newIsList, $indent + $spaceCount)
                     : getPrimitiveValueAsString($newValue);
-                $renderedOld = "{$indentBeforeSign}- $nodeKey: {$oldValue}\n";
-                $renderedNew = "{$indentBeforeSign}+ $nodeKey: {$newValue}\n";
+
+                $renderedOld = "{$indentBeforeSign}- $nodeKey: {$renderedOldValue}\n";
+                $renderedNew = "{$indentBeforeSign}+ $nodeKey: {$renderedNewValue}\n";
                 return "{$acc}{$renderedOld}{$renderedNew}";
             }
             $isList = isList($nodeValue);
@@ -59,7 +60,7 @@ function formatToStylish(array $tree, bool $isList = false, int $indent = 0, int
     return "{\n{$result}{$closBracketIndent}}";
 }
 
-function formatToPlain(array $tree, $path = ''): string
+function formatToPlain(array $tree, string $path = ''): string
 {
     $result = reduce_left(
         $tree,
@@ -116,6 +117,6 @@ function getSignByType(string $type): ?string
         'added' => '+',
         'deleted' => '-',
         'unchanged', 'updated' => ' ',
-        'changed' => null
+        default => null
     };
 }
