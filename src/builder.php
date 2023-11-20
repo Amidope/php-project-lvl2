@@ -8,7 +8,7 @@ use function Differ\Functions\isAssocArray;
 
 function buildTree(mixed $data1, mixed $data2 = []): mixed
 {
-    if (!$data2) {
+    if ($data2 === []) {
         return isAssocArray($data1)
             ? map($data1, fn ($val, $key) => buildNode('unchanged', $key, $val))
             : $data1;
