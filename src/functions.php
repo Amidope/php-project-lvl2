@@ -87,4 +87,3 @@ function isAssocArray(mixed $value): bool
     }
     return false;
 }
-
