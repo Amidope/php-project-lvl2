@@ -25,7 +25,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $renderFormat 
     $message = checkForEmptyness($arr1, $arr2);
 
     if ($message) {
-        return $message;
+        throw new \Exception("filepath is not readable");
     }
     if (isInvalidFormat($renderFormat)) {
         return "Invalid format\n";
