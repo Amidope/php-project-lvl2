@@ -7,21 +7,22 @@ use function Differ\Formatters\formatToPlain;
 use function Differ\Formatters\formatToJson;
 use function Functional\reduce_left;
 
-function throwErrors(string $filepath1, string $filepath2, string $format): void
+function throwErrors(string $filepath1, string $filepath2, string $format): bool
 {
-    array_map(
+    $e = array_map(
         function ($filepath) {
-            return is_readable($filepath) ?: throw new \Exception("File {$filepath} is not readable");
+            return is_readable($filepath) ? '' : throw new \Exception("File {$filepath} is not readable");
         },
         [$filepath1, $filepath2]
     );
     $errors = getExtensionErrorMessages($filepath1, $filepath2);
-    if (!empty($errors)) {
+    if ($errors !== '') {
         throw new \Exception($errors);
     }
     if (isInvalidFormat($format)) {
         throw new \Exception("Invalid format\n");
     }
+    return false;
 }
 
 function treeSort(array $tree): array
@@ -49,7 +50,7 @@ function getExtensionErrorMessages(string ...$filePaths): string
     return reduce_left(
         $filePaths,
         function ($path, $ind, $col, $acc) {
-            return hasValidExtension($path) ? $acc : $acc . "File {${$ind++}} has invalid extension\n";
+            return hasValidExtension($path) ? $acc : $acc . "File {${$ind + 1}} has invalid extension\n";
         },
         ""
     );

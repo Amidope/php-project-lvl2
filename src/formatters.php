@@ -69,7 +69,7 @@ function formatToPlain(array $tree, string $path = ''): string
                 'type' => $type,
                 'value' => $nodeValue,
             ] = $item;
-            $separator = $path ? '.' : '';
+            $separator = $path === '' ? '' : '.';
             $currentPath = "{$path}{$separator}{$nodeKey}";
             switch ($type) {
                 case 'updated':
