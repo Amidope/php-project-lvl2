@@ -55,10 +55,10 @@ function hasValidExtension(string $fileName): bool
 
 function getExtensionErrorMessages(string ...$filePaths): string
 {
-    return reduce_left(
+    return array_reduce(
         $filePaths,
-        function ($path, $ind, $col, $acc) {
-            return hasValidExtension($path) ? $acc : $acc . "File {${$ind + 1}} has invalid extension\n";
+        function ($acc, $filepath) {
+            return hasValidExtension($filepath) ? $acc : $acc . "File {$filepath} has invalid extension\n";
         },
         ""
     );
