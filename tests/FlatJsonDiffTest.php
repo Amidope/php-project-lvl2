@@ -12,7 +12,6 @@ class FlatJsonDiffTest extends TestCase
     protected $jsonPath2;
     protected $pathToYaml1;
     protected $pathToYaml2;
-    protected $pathToEmptyYaml;
     protected $expectedFlatGendiff;
 
     public function getFixtureFullPath($fixtureName): string
