@@ -27,8 +27,16 @@ function throwErrors(string $filepath1, string $filepath2, string $format): bool
 
 function treeSort(array $tree): array
 {
-    ksort($tree);
-    return $tree;
+    $sortedKeys = \Functional\sort(
+        array_keys($tree),
+        fn($k1, $k2) => $k1 <=> $k2,
+        false
+    );
+    return array_reduce(
+        $sortedKeys,
+        fn ($acc, $key) => [...$acc, ...[$key => $tree[$key]]],
+        []
+    );
 }
 
 function getDiffByFormat(array $tree, string $renderFormat): string
