@@ -40,7 +40,6 @@ try {
     $output = genDiff($pathToFile1, $pathToFile2, $format);
 } catch (\Exception $e) {
     print_r($e->getMessage());
-    $f = false;
 } finally {
     $success = !isset($e);
 }
