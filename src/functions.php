@@ -29,7 +29,7 @@ function treeSort(array $tree): array
 {
     $sortedKeys = \Functional\sort(
         array_keys($tree),
-        fn($k1, $k2) => $k1 <=> $k2,
+        fn($key1, $key2) => $key1 <=> $key2,
         false
     );
     return array_reduce(
