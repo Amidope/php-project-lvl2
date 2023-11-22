@@ -5,6 +5,7 @@ namespace Differ\Functions;
 use function Differ\Formatters\formatToStylish;
 use function Differ\Formatters\formatToPlain;
 use function Differ\Formatters\formatToJson;
+use function Functional\map;
 use function Functional\reduce_left;
 
 function throwErrors(string $filepath1, string $filepath2, string $format): bool
@@ -32,11 +33,7 @@ function treeSort(array $tree): array
         fn($key1, $key2) => $key1 <=> $key2,
         false
     );
-    return array_reduce(
-        $sortedKeys,
-        fn ($acc, $key) => [...$acc, ...[$key => $tree[$key]]],
-        []
-    );
+    return array_merge(array_flip($sortedKeys), $tree);
 }
 
 function getDiffByFormat(array $tree, string $renderFormat): string
