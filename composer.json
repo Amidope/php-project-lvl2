@@ -25,6 +25,11 @@
             "src/differ.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Differ\\Tests\\": "tests"
+        }
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "@stable",
         "phpunit/phpunit": "@stable",
